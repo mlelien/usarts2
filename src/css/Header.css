@@ -1,6 +1,10 @@
 header {
   display: flex;
   justify-content: space-between;
+  align-items: flex-end;
+  padding: 2rem;
+  margin: 0 auto;
+  max-width: 90rem;
 }
 
 header div {
@@ -15,5 +19,5 @@ header p {
 }
 
 header img {
-  max-height: 10rem;
+  max-height: 6rem;
 }

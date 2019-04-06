@@ -16,6 +16,7 @@ const devServer = {
   port: 3000,
   compress: true,
   watchContentBase: true,
+  historyApiFallback: true,
 }
 
 const babelLoader = {
