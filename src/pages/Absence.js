@@ -1,7 +1,22 @@
-import React from 'react'
+import React, {Component} from 'react';
 
-const Absence = () => (
-  <div>Absence Page</div>
-)
+class Absence extends React.Component {
+	constructor(props) {
+		super(props);
+		this.state = {
+      // form details?
+		};
+	}
 
-export default Absence
+	render() {
+		return (
+			<div>
+        <div> hello this is absence </div>
+				<p><a href="/absence-pending">pending</a></p>
+        <p><a href='/absence-confirmation'>confirmation</a></p>
+      </div>
+		);
+	}
+}
+
+export default Absence;

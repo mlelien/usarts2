@@ -6,6 +6,8 @@ import Header from './Header'
 import './css/App.css'
 import Navbar from './Navbar'
 import Absence from './pages/Absence'
+import AbsenceConf from './pages/AbsenceConf'
+import AbsencePending from './pages/AbsencePending'
 import Makeup from './pages/Makeup'
 
 const markup = (
@@ -15,6 +17,8 @@ const markup = (
       <Navbar />
       <Switch>
         <Route exact path='/absence' render={() => <Absence />} />
+        <Route exact path='/absence-confirmation' render={() => <AbsenceConf />} />
+        <Route exact path='/absence-pending' render={() => <AbsencePending />} />
         <Route exact path='/makeup' render={() => <Makeup />} />
       </Switch>
     </div>
