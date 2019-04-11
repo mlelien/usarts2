@@ -3,13 +3,22 @@ nav {
 }
 
 .nav-container {
-  max-width: 90rem;
+  max-width: 80rem;
   margin: 0 auto;
   display: flex;
   justify-content: space-between;
   padding: 1.5rem 0;
+  font-size: 1.5rem;
 }
 
 .nav-link {
   text-decoration: none;
+  color:#D12F24;
+  /* color: #151515; */
+  text-transform: uppercase;
+}
+
+.nav-link:hover{
+  /* color: #D12F24 */
+  color: #151515;
 }
