@@ -19,3 +19,8 @@
   color: white;
   border-radius: 8px;
 }
+
+.rbc-calendar {
+  min-height: 400px ;
+  max-width: 600px;
+}
