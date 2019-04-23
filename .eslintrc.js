@@ -7,6 +7,8 @@ module.exports = {
         "react/jsx-filename-extension": [1, { "extensions": [".js", ".jsx"] }],
         "jsx-quotes": 0,
         "max-len": 0,
+        "jsx-a11y/label-has-associated-control": off,
+        "jsx-a11y/label-has-for": off,
     },
     "plugins": [
         "only-warn"

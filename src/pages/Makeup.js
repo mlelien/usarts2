@@ -12,11 +12,11 @@ const events = [
     allDay: true,
     start: new Date(2019, 4, 10),
     end: new Date(2019, 4, 11),
-  }
+  },
 ]
 
 const Makeup = () => (
-  <div class="container">
+  <div className="container">
     Makeup
     <div>
       <BigCalendar
