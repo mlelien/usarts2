@@ -20,6 +20,14 @@
   padding-left: 0.5rem;
 }
 
+.input-group .select {
+  border: 1px solid #cacccd;
+  height: 3rem;
+  border-radius: 5px;
+  width: 17rem;
+  padding-left: 0.5rem;
+}
+
 .input-group span {
   padding-bottom: 1rem;
   color: #555555;

@@ -78,7 +78,7 @@ class Absence extends Component {
 								<div className='row-item'>
 									<label className='input-group'>
 										<span>Room #</span>
-										<select className='input'>
+										<select className='select'>
 											<option>112</option>
 											<option>113</option>
 										</select>
@@ -87,7 +87,7 @@ class Absence extends Component {
 								<div className='row-item'>
 									<label className='input-group'>
 										<span>Class Time</span>
-										<select className='input'>
+										<select className='select'>
 											<option>10:00 AM</option>
 											<option>11:00 AM</option>
 										</select>
@@ -97,7 +97,7 @@ class Absence extends Component {
 									<label className='input-group'>
 										<span>School pickup (optional)</span>
 										<span className='subtitle'>If your child usually gets picked up from school, please select the school here:</span>
-										<select className='input'>
+										<select className='select'>
 											<option>Rachel Carson</option>
 											<option>Holmes</option>
 										</select>
