@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import '../css/Absence.css'
 import '../css/styles.css'
+import Tabletop from 'tabletop'
 
 class Absence extends Component {
   constructor(props) {
@@ -8,7 +9,13 @@ class Absence extends Component {
     this.state = {
       // form details?
     }
-  }
+	}
+	
+	componentDidMount() {
+		// Tabletop.init({
+		// 	key: ''
+		// })
+	}
 
 	render() {
    	return (
