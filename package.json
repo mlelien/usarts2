@@ -4,6 +4,7 @@
     "build": "webpack --mode production"
   },
   "dependencies": {
+    "dotenv": "^7.0.0",
     "moment": "^2.24.0",
     "react": "^16.8.6",
     "react-big-calendar": "^0.20.4",

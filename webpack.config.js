@@ -1,8 +1,21 @@
 const path = require('path')
+const dotenv = require('dotenv')
+const webpack = require('webpack')
 
 const entry = {
   index: './src/App.js',
 }
+
+const env = dotenv.config().parsed
+
+const envKeys = Object.keys(env).reduce((prev, next) => {
+  prev[`process.env.${next}`] = JSON.stringify(env[next])
+  return prev
+}, {})
+
+const plugins = [
+  new webpack.DefinePlugin(envKeys),
+]
 
 const output = {
   path: path.resolve(__dirname, 'public'),
@@ -53,4 +66,5 @@ module.exports = {
       imageLoader,
     ],
   },
+  plugins,
 }
