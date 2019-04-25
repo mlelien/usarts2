@@ -8,7 +8,8 @@
     "react": "^16.8.6",
     "react-big-calendar": "^0.20.4",
     "react-dom": "^16.8.6",
-    "react-router-dom": "^5.0.0"
+    "react-router-dom": "^5.0.0",
+    "tabletop": "^1.5.2"
   },
   "devDependencies": {
     "@babel/core": "^7.4.3",
