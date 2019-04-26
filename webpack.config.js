@@ -55,6 +55,12 @@ const imageLoader = {
   },
 }
 
+const node = {
+  net: 'empty',
+    fs: 'empty',
+    tls: 'empty',
+}
+
 module.exports = {
   entry,
   output,
@@ -67,4 +73,5 @@ module.exports = {
     ],
   },
   plugins,
+  node,
 }
