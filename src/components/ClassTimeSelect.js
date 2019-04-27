@@ -19,7 +19,7 @@ class ClassTimeSelect extends Component {
     Tabletop.init({
       key: process.env.CLASS_SCHEDULE_FAIRFAX,
       callback: (data) => {
-        const fairfaxTimes = data.map(room => this.turnToNormalFormat(room['Seq No']))
+        const fairfaxTimes = data.map(room => this.turnToNormalFormat(room['Seq No'], room.AMPM))
         this.setState({ fairfaxTimes })
       },
       simpleSheet: true,
@@ -28,26 +28,27 @@ class ClassTimeSelect extends Component {
     Tabletop.init({
       key: process.env.CLASS_SCHEDULE_CHANTILLY,
       callback: (data) => {
-        const chantillyTimes = data.map(room => this.turnToNormalFormat(room['Seq No']))
+        const chantillyTimes = data.map(room => this.turnToNormalFormat(room['Seq No'], room.AMPM))
         this.setState({ chantillyTimes })
       },
       simpleSheet: true,
     })
   }
 
-  turnToNormalFormat = (timeGiven) => {
+  turnToNormalFormat = (timeGiven, amOrPm) => {
     const justTime = timeGiven.slice(1)
 
     if (justTime[0] === '0') {
-      return `${justTime[1]}:${justTime[2]}${justTime[3]} PM`
+      return `${justTime[1]}:${justTime[2]}${justTime[3]} ${amOrPm}`
     }
 
-    return `${justTime[0]}${justTime[1]}:${justTime[2]}${justTime[3]} PM`
+    return `${justTime[0]}${justTime[1]}:${justTime[2]}${justTime[3]} ${amOrPm}`
   }
 
   timeOptions = () => {
     const { fairfaxTimes, chantillyTimes } = this.state
     const allClassTimes = Array.from(new Set([...fairfaxTimes, ...chantillyTimes]))
+    allClassTimes.sort((a, b) => new Date(`1970/01/01 ${a}`) - new Date(`1970/01/01 ${b}`))
 
     return allClassTimes.map(time => <option key={time} value={time}>{time}</option>)
   }

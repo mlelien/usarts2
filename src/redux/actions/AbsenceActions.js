@@ -55,3 +55,7 @@ export const setRepeatedAbsences = (repeatedAbsences, i) => ({
 export const addChild = () => ({
   type: 'ADD_CHILD',
 })
+
+export const clearAbsences = () => ({
+  type: 'CLEAR_ABSENCES',
+})

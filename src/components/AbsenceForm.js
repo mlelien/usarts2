@@ -5,6 +5,7 @@ import styled from 'styled-components'
 import { withRouter } from 'react-router-dom'
 
 import { connect } from 'react-redux'
+import PropTypes from 'prop-types'
 import EnterDate from './EnterDate'
 import LocationRadio from './LocationRadio'
 import TextInput from './TextInput'
@@ -14,7 +15,7 @@ import ClassTimeSelect from './ClassTimeSelect'
 import SchoolPickupSelect from './SchoolPickupSelect'
 
 const Row = styled.div`
-	display: flex;
+	display: flex; 
   margin-bottom: 3rem;
 `
 
@@ -39,8 +40,10 @@ const AbsenceForm = (props) => {
           </label>
         </RowItem>
         <RowItem>
-          <span>Location</span>
-          <LocationRadio childIndex={childIndex} value={location} />
+          <label className='input-group'>
+            <span>Location</span>
+            <LocationRadio childIndex={childIndex} value={location} />
+          </label>
         </RowItem>
       </Row>
       <Row>
@@ -84,19 +87,23 @@ const AbsenceForm = (props) => {
   )
 }
 
+AbsenceForm.propTypes = {
+  child: PropTypes.shape({
+    date: PropTypes.object.isRequired,
+    location: PropTypes.string.isRequired,
+    lastName: PropTypes.string.isRequired,
+    firstName: PropTypes.string.isRequired,
+    studentID: PropTypes.string,
+    room: PropTypes.string.isRequired,
+    classTime: PropTypes.string.isRequired,
+    schoolPickup: PropTypes.string,
+    repeatedAbsences: PropTypes.string,
+  }).isRequired,
+  childIndex: PropTypes.number.isRequired,
+}
+
 const mapDispatchToProps = (state, props) => ({
   child: state[props.childIndex],
 })
-
-// const mapDispatchToProps = state => ({
-//   date: state.date,
-//   location: state.localizer,
-//   lastName: state.lastName,
-//   firstName: state.firstName,
-//   studentID: state.studentID,
-//   room: state.room,
-//   classTime: state.classTime,
-//   schoolPickup: state.schoolPickup,
-// })
 
 export default withRouter(connect(mapDispatchToProps)(AbsenceForm))

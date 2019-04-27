@@ -7,7 +7,7 @@ import { withRouter } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { history as historyPropTypes } from 'history-prop-types'
 import AbsenceForm from '../components/AbsenceForm'
-import { setRepeatedAbsences, addChild } from '../redux/actions/AbsenceActions'
+import { setRepeatedAbsences, addChild, clearAbsences } from '../redux/actions/AbsenceActions'
 import TextInput from '../components/TextInput'
 
 const Row = styled.div`
@@ -37,14 +37,15 @@ class Absence extends Component {
     super(props)
 
     this.state = {
-      numChildren: 1,
+      numChildren: props.numChildren,
     }
   }
 
   onSubmit = (event) => {
     event.preventDefault()
-    const { history } = this.props
+    const { history, dispatch } = this.props
 
+    // TODO: make sure all req fields are filled
     // if (firstName !== '' && lastName !== '') {
     history.push('/absence-pending')
     // }
@@ -66,7 +67,18 @@ class Absence extends Component {
     return forms
   }
 
+  onRepeatedAbsencesChange = (event) => {
+    const { dispatch } = this.props
+    const { numChildren } = this.state
+    const { value } = event.target
+
+    for (let i = 0; i < numChildren; i++) {
+      dispatch(setRepeatedAbsences(value, i))
+    }
+  }
+
   render() {
+    // TODO: forgot text at the end about making up absences
     const { repeatedAbsences } = this.props
 
     return (
@@ -82,11 +94,14 @@ class Absence extends Component {
           </RowItem>
         </Row>
         <Row>
-          {/* <TextInput
-            label='Repeated Absences (optional)'
-            action={setRepeatedAbsences}
-            value={repeatedAbsences}
-          /> */}
+          <label className='input-group'>
+            <span>Repeated Absences (optional)</span>
+            <input
+              className='input'
+              type='text'
+              onChange={this.onRepeatedAbsencesChange}
+            />
+          </label>
         </Row>
         <button type='submit' onClick={this.onSubmit}>Submit Absence</button>
 
@@ -106,6 +121,11 @@ Absence.propTypes = {
     historyPropTypes,
   }).isRequired,
   dispatch: PropTypes.func.isRequired,
+  numChildren: PropTypes.number.isRequired,
 }
 
-export default withRouter(connect()(Absence))
+const mapDispatchToProps = state => ({
+  numChildren: state.length,
+})
+
+export default withRouter(connect(mapDispatchToProps)(Absence))

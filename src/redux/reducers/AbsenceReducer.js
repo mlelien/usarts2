@@ -7,7 +7,7 @@ const absenceDefaultState = [{
   firstName: '',
   studentID: '',
   room: '1',
-  classTime: '4:30 PM',
+  classTime: '9:00 AM',
   schoolPickup: 'None',
   repeatedAbsences: '',
 }]
@@ -19,6 +19,9 @@ const AbsenceReducer = (state = absenceDefaultState, action) => {
     case 'ADD_CHILD':
       state.push(prevChild)
       return state
+
+    case 'CLEAR_ABSENCES':
+      return absenceDefaultState
 
     case 'SET_DATE':
       return state.map((child, i) => {
