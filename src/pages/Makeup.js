@@ -1,7 +1,13 @@
-import React from 'react'
+import React, { Component } from 'react'
 import BigCalendar from 'react-big-calendar'
 import moment from 'moment'
 import 'react-big-calendar/lib/css/react-big-calendar.css'
+
+import 'react-dates/initialize'
+import 'react-dates/lib/css/_datepicker.css'
+import '../css/Calendar.css'
+import { SingleDatePicker } from 'react-dates' //eslint-disable-line
+
 
 /*
 constructor(props) {
@@ -56,19 +62,54 @@ const events = [
   },
 ]
 
-const Makeup = () => (
-  <div className="container">
-    Makeup
-    <div>
-      <BigCalendar
+class Makeup extends Component {
+  constructor(props) {
+    super(props)
+
+    this.state = {
+      date: moment(),
+    }
+  }
+
+  onDateChange = (date) => {
+    if (date) {
+      this.setState(() => ({ date }))
+    }
+  }
+
+  onCalendarFocusChanged = () => true
+
+  render() {
+    const { date } = this.state
+    const date1 = moment().subtract(1, 'days')
+    const date2 = moment().subtract(2, 'days')
+
+    return (
+      <div className="container">
+      Makeup
+        <div>
+          <SingleDatePicker
+            date={date}
+            onDateChange={this.onDateChange}
+            focused
+            onFocusChange={this.onCalendarFocusChanged}
+            numberOfMonths={1}
+            isOutsideRange={(day) => {
+              if (day.isSame(date1, 'day')) return true
+              return false
+            }}
+          />
+          {/* <BigCalendar
         localizer={localizer}
         events={events}
         defaultDate={new Date(2019, 4, 1)}
         startAccessor="startDate"
         endAccessor="endDate"
-      />
-    </div>
-  </div>
-)
+      /> */}
+        </div>
+      </div>
+    )
+  }
+}
 
 export default Makeup
