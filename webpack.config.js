@@ -8,6 +8,8 @@ const entry = {
 
 const env = dotenv.config().parsed
 
+process.env.NODE_ENV = process.env.NODE_ENV || 'development'
+
 const envKeys = Object.keys(env).reduce((prev, next) => {
   prev[`process.env.${next}`] = JSON.stringify(env[next])
   return prev
@@ -57,8 +59,8 @@ const imageLoader = {
 
 const node = {
   net: 'empty',
-    fs: 'empty',
-    tls: 'empty',
+  fs: 'empty',
+  tls: 'empty',
 }
 
 module.exports = {

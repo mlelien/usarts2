@@ -9,6 +9,7 @@ module.exports = {
         "max-len": 0,
         "jsx-a11y/label-has-associated-control": "off",
         "jsx-a11y/label-has-for": "off",
+        "no-plusplus": "off",
     },
     "plugins": [
         "only-warn"
@@ -16,5 +17,6 @@ module.exports = {
     "globals": {
         "document": true,
         "window": true,
+        "localStorage": true,
     }
 };

@@ -6,6 +6,7 @@ import styled from 'styled-components'
 import { withRouter } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { history as historyPropTypes } from 'history-prop-types'
+import axios from 'axios'
 import AbsenceForm from '../components/AbsenceForm'
 import { setRepeatedAbsences, addChild, clearAbsences } from '../redux/actions/AbsenceActions'
 import TextInput from '../components/TextInput'
@@ -41,6 +42,16 @@ class Absence extends Component {
     }
   }
 
+  componentDidMount() {
+    if (process.env.NODE_ENV !== 'development') {
+      axios
+        .get('/api/allLastModified')
+        .then((response) => {
+          localStorage.setItem('dates', JSON.stringify(response.data))
+        })
+    }
+  }
+
   onSubmit = (event) => {
     event.preventDefault()
     const { history, dispatch } = this.props
@@ -52,12 +63,16 @@ class Absence extends Component {
   }
 
   onAddChildBtnClicked = () => {
+    const { numChildren } = this.state
     const { dispatch } = this.props
-    dispatch(addChild())
 
-    this.setState(prevState => ({
-      numChildren: prevState.numChildren + 1,
-    }))
+    if (numChildren < 4) {
+      dispatch(addChild())
+
+      this.setState(prevState => ({
+        numChildren: prevState.numChildren + 1,
+      }))
+    }
   }
 
   showAbsenceForm = () => {

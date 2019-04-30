@@ -20,6 +20,7 @@ const jwtClient = new google.auth.JWT(privatekey.client_email,
   null,
   privatekey.private_key, [
     'https://www.googleapis.com/auth/spreadsheets',
+    'https://www.googleapis.com/auth/drive',
   ])
 // authenticate request
 jwtClient.authorize((err) => {
@@ -33,29 +34,87 @@ jwtClient.authorize((err) => {
   }
 })
 
+app.get('/api/allLastModified', (req, res) => {
+  const drive = google.drive('v3')
+
+  drive.files
+    .list({
+      auth: jwtClient,
+      fields: 'files(modifiedTime, name, id)',
+    })
+    .then((response, err) => {
+      const dataSendBack = response.data.files
+      res.send(dataSendBack)
+    })
+})
+
+app.get('/api/getFieldData', (req, res) => {
+  const sheets = google.sheets('v4').spreadsheets.values
+  const drive = google.drive('v3')
+  const { spreadsheetId } = req.query
+
+  sheets
+    .get({
+      auth: jwtClient,
+      spreadsheetId,
+      range: 'A:C',
+    })
+    .then((response, err) => {
+      const sheetsData = response.data.values
+      const keys = sheetsData[0]
+      const savableForm = []
+
+      for (let row = 1; row < sheetsData.length; row++) {
+        const obj = {}
+
+        for (let propIndex = 0; propIndex < sheetsData[row].length; propIndex++) {
+          const currRow = sheetsData[row]
+          const currProp = keys[propIndex]
+
+          obj[currProp] = currRow[propIndex]
+        }
+
+        savableForm.push(obj)
+      }
+
+      drive.files
+        .list({
+          auth: jwtClient,
+          fileId: spreadsheetId,
+          fields: 'files(modifiedTime, name, id)',
+        })
+        .then((responseDrive, errDrive) => {
+          if (!errDrive) {
+            const file = responseDrive.data.files.filter(row => row.id === spreadsheetId)
+            const { modifiedTime, id } = file[0]
+
+            savableForm.unshift({
+              modifiedTime,
+            })
+
+            res.send(savableForm)
+          }
+        })
+    })
+})
+
 app.post('/api/getList', (req, res) => {
   const { childrenDateFormatted } = req.body
-
-  const spreadsheetId = privatekey.absences_spreadsheet_id
-  const sheetName = 'A2:H2'
-  const sheets = google.sheets('v4')
+  const sheets = google.sheets('v4').spreadsheets.values
 
   const values = childrenDateFormatted.map(child => Object.values(child))
-
   const body = {
     values,
   }
 
-  sheets.spreadsheets.values.append({
+  sheets.append({
     auth: jwtClient,
-    spreadsheetId,
-    range: sheetName,
+    spreadsheetId: privatekey.absences_spreadsheet_id,
+    range: 'A2:H2',
     valueInputOption: 'RAW',
     resource: body,
   }, (err) => {
-    if (err) {
-      console.log(`The API returned an error: ${err}`)
-    } else {
+    if (!err) {
       res.send('done')
     }
   })

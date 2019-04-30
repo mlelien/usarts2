@@ -1,8 +1,9 @@
 import React, { Component } from 'react'
-import Tabletop from 'tabletop'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
+import axios from 'axios'
 import { setClassTime } from '../redux/actions/AbsenceActions'
+import { hasFileBeenModified, turnToNormalTime } from '../dataHelper'
 
 class ClassTimeSelect extends Component {
   constructor(props) {
@@ -16,33 +17,50 @@ class ClassTimeSelect extends Component {
   }
 
   componentDidMount() {
-    Tabletop.init({
-      key: process.env.CLASS_SCHEDULE_FAIRFAX,
-      callback: (data) => {
-        const fairfaxTimes = data.map(room => this.turnToNormalFormat(room['Seq No'], room.AMPM))
-        this.setState({ fairfaxTimes })
-      },
-      simpleSheet: true,
-    })
+    const fairfaxSavedData = JSON.parse(localStorage.getItem(process.env.CLASS_SCHEDULE_FAIRFAX))
+    const chantillySavedData = JSON.parse(localStorage.getItem(process.env.CLASS_SCHEDULE_CHANTILLY))
 
-    Tabletop.init({
-      key: process.env.CLASS_SCHEDULE_CHANTILLY,
-      callback: (data) => {
-        const chantillyTimes = data.map(room => this.turnToNormalFormat(room['Seq No'], room.AMPM))
-        this.setState({ chantillyTimes })
-      },
-      simpleSheet: true,
-    })
-  }
-
-  turnToNormalFormat = (timeGiven, amOrPm) => {
-    const justTime = timeGiven.slice(1)
-
-    if (justTime[0] === '0') {
-      return `${justTime[1]}:${justTime[2]}${justTime[3]} ${amOrPm}`
+    if (!fairfaxSavedData) {
+      this.backendGetData(process.env.CLASS_SCHEDULE_FAIRFAX)
+    } else if (fairfaxSavedData && process.env.NODE_ENV !== 'development' && hasFileBeenModified(fairfaxSavedData, process.env.CLASS_SCHEDULE_FAIRFAX)) {
+      this.backendGetData(process.env.CLASS_SCHEDULE_FAIRFAX)
+    } else {
+      const editedData = fairfaxSavedData.slice(1)
+      const fairfaxTimes = editedData.map(timeObj => turnToNormalTime(timeObj))
+      this.loadDataToState(fairfaxTimes, process.env.CLASS_SCHEDULE_FAIRFAX)
     }
 
-    return `${justTime[0]}${justTime[1]}:${justTime[2]}${justTime[3]} ${amOrPm}`
+    if (!chantillySavedData) {
+      this.backendGetData(process.env.CLASS_SCHEDULE_CHANTILLY)
+    } else if (chantillySavedData && process.env.NODE_ENV !== 'development' && hasFileBeenModified(chantillySavedData, process.env.CLASS_SCHEDULE_CHANTILLY)) {
+      this.backendGetData(process.env.CLASS_SCHEDULE_CHANTILLY)
+    } else {
+      const editedData = chantillySavedData.slice(1)
+      const chantillyTimes = editedData.map(timeObj => turnToNormalTime(timeObj))
+      this.loadDataToState(chantillyTimes, process.env.CLASS_SCHEDULE_CHANTILLY)
+    }
+  }
+
+  loadDataToState = (data, spreadsheetId) => {
+    if (spreadsheetId === process.env.CLASS_SCHEDULE_FAIRFAX) {
+      this.setState({ fairfaxTimes: data })
+    } else {
+      this.setState({ chantillyTimes: data })
+    }
+  }
+
+  backendGetData = (spreadsheetId) => {
+    axios
+      .get('/api/getFieldData', {
+        params: {
+          spreadsheetId,
+        },
+      })
+      .then((res) => {
+        this.loadDataToState(res.data)
+        const serializedData = JSON.stringify(res.data)
+        localStorage.setItem(spreadsheetId, serializedData)
+      })
   }
 
   timeOptions = () => {

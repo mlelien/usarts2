@@ -2,10 +2,10 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import axios from 'axios'
-import { setRoom } from '../redux/actions/AbsenceActions'
-import { hasFileBeenModified } from '../dataHelper'
+import { setRoom } from '../../redux/actions/AbsenceActions'
+import { hasFileBeenModified } from '../../dataHelper'
 
-class RoomSelect extends Component {
+class RoomCheckbox extends Component {
   constructor(props) {
     super(props)
 
@@ -62,17 +62,6 @@ class RoomSelect extends Component {
       })
   }
 
-  roomOptions = () => {
-    const { location } = this.props
-    const { fairfaxRooms, chantillyRooms } = this.state
-
-    const roomsJSX = location === 'Fairfax'
-      ? fairfaxRooms.map(room => <option key={room} value={room}>{room}</option>)
-      : chantillyRooms.map(room => <option key={room} value={room}>{room}</option>)
-
-    return roomsJSX
-  }
-
   onChange = (event) => {
     const { dispatch, childIndex } = this.props
     const { value } = event.target
@@ -83,32 +72,64 @@ class RoomSelect extends Component {
     })
   }
 
+
+  roomCheckboxes = () => {
+    const { location } = this.props
+    const { fairfaxRooms, chantillyRooms } = this.state
+
+    const roomsJSX = location === 'Fairfax'
+      ? fairfaxRooms.map(room => (
+        <label>
+          <input
+            type='checkbox'
+            key={room}
+            value={room}
+            checked
+            onChange={this.onChange}
+          />
+          {room}
+        </label>
+      ))
+      : chantillyRooms.map(room => (
+        <label>
+          <input
+            type='checkbox'
+            key={room}
+            value={room}
+            checked
+            onChange={this.onChange}
+          />
+          {room}
+        </label>
+      ))
+
+    return roomsJSX
+  }
+
   render() {
     const { value } = this.state
     return (
       <label className='input-group'>
         <span>Room #</span>
-        <select className='select' value={value} onChange={this.onChange}>
-          {this.roomOptions()}
-        </select>
+        {this.roomCheckboxes()}
       </label>
     )
   }
 }
 
-RoomSelect.defaultProps = {
+RoomCheckbox.defaultProps = {
   value: '',
 }
 
-RoomSelect.propTypes = {
+RoomCheckbox.propTypes = {
   dispatch: PropTypes.func.isRequired,
   value: PropTypes.string,
   childIndex: PropTypes.number.isRequired,
   location: PropTypes.string.isRequired,
 }
 
-const mapDispatchToProps = (state, props) => ({
-  location: state[props.childIndex].location,
-})
+// const mapDispatchToProps = (state, props) => ({
+//   location: state[props.childIndex].location,
+// })
 
-export default connect(mapDispatchToProps)(RoomSelect)
+export default connect()(RoomCheckbox)

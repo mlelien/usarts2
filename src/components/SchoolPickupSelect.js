@@ -1,8 +1,9 @@
 import React, { Component } from 'react'
-import Tabletop from 'tabletop'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
+import axios from 'axios'
 import { setSchoolPickup } from '../redux/actions/AbsenceActions'
+import { hasFileBeenModified } from '../dataHelper'
 
 class SchoolPickupSelect extends Component {
   constructor(props) {
@@ -16,30 +17,58 @@ class SchoolPickupSelect extends Component {
   }
 
   componentDidMount() {
-    Tabletop.init({
-      key: process.env.SCHOOL_PICKUP_FAIRFAX,
-      callback: (data) => {
-        const fairfaxSchools = data.map(school => school['School Name'])
-        this.setState({ fairfaxSchools })
-      },
-      simpleSheet: true,
-    })
+    const fairfaxSchoolsData = JSON.parse(localStorage.getItem(process.env.SCHOOL_PICKUP_FAIRFAX))
+    const chantillySchoolsData = JSON.parse(localStorage.getItem(process.env.SCHOOL_PICKUP_CHANTILLY))
 
-    Tabletop.init({
-      key: process.env.SCHOOL_PICKUP_CHANTILLY,
-      callback: (data) => {
-        const chantillySchools = data.map(school => school['School Name'])
-        this.setState({ chantillySchools })
-      },
-      simpleSheet: true,
-    })
+    if (!fairfaxSchoolsData) {
+      this.backendGetData(process.env.SCHOOL_PICKUP_FAIRFAX)
+    } else if (fairfaxSchoolsData && process.env.NODE_ENV !== 'development' && hasFileBeenModified(fairfaxSchoolsData, process.env.SCHOOL_PICKUP_FAIRFAX)) {
+      this.backendGetData(process.env.SCHOOL_PICKUP_FAIRFAX)
+    } else {
+      this.loadDataToState(fairfaxSchoolsData, process.env.SCHOOL_PICKUP_FAIRFAX)
+    }
+
+    if (!chantillySchoolsData) {
+      this.backendGetData(process.env.SCHOOL_PICKUP_CHANTILLY)
+    } else if (chantillySchoolsData && process.env.NODE_ENV !== 'development' && hasFileBeenModified(chantillySchoolsData, process.env.SCHOOL_PICKUP_CHANTILLY)) {
+      this.backendGetData(process.env.SCHOOL_PICKUP_CHANTILLY)
+    } else {
+      this.loadDataToState(chantillySchoolsData, process.env.SCHOOL_PICKUP_CHANTILLY)
+    }
+  }
+
+  loadDataToState = (data, spreadsheetId) => {
+    const editedData = data.slice(1)
+
+    const schools = editedData.map(school => school['School Name'])
+    if (spreadsheetId === process.env.SCHOOL_PICKUP_FAIRFAX) {
+      this.setState({ fairfaxSchools: schools })
+    } else {
+      this.setState({ chantillySchools: schools })
+    }
+  }
+
+  backendGetData = (spreadsheetId) => {
+    axios
+      .get('/api/getFieldData', {
+        params: {
+          spreadsheetId,
+        },
+      })
+      .then((res) => {
+        this.loadDataToState(res.data)
+        const serializedData = JSON.stringify(res.data)
+        localStorage.setItem(spreadsheetId, serializedData)
+      })
   }
 
   schoolPickupOptions = () => {
+    const { location } = this.props
     const { fairfaxSchools, chantillySchools } = this.state
-    const allSchools = Array.from(new Set([...fairfaxSchools, ...chantillySchools]))
 
-    return allSchools.map(school => <option key={school} value={school}>{school}</option>)
+    return location === 'Fairfax'
+      ? fairfaxSchools.map(school => <option key={school} value={school}>{school}</option>)
+      : chantillySchools.map(school => <option key={school} value={school}>{school}</option>)
   }
 
   onChange = (event) => {
@@ -76,7 +105,11 @@ SchoolPickupSelect.propTypes = {
   dispatch: PropTypes.func.isRequired,
   value: PropTypes.string,
   childIndex: PropTypes.number.isRequired,
+  location: PropTypes.string.isRequired,
 }
 
+const mapDispatchToProps = (state, props) => ({
+  location: state[props.childIndex].location,
+})
 
-export default connect()(SchoolPickupSelect)
+export default connect(mapDispatchToProps)(SchoolPickupSelect)
