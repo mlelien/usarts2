@@ -22,6 +22,26 @@
 }
 
 .rbc-calendar {
-  min-height: 400px ;
+  min-height: 400px;
   max-width: 600px;
+}
+
+.buttonLink {
+  padding:15px 50px 15px 50px;
+  background-color:#D12F24;
+  text-decoration: none;
+  color:white;
+  border-radius:4px;
+}
+
+.column {
+  width: 50%;
+  display:inline-block;
+}
+
+.row {
+  width: 800px;
+  margin: 0 auto;
+  padding-top:40px;
+  text-align:center;
 }
