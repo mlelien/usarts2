@@ -1,9 +1,9 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
-import axios from 'axios'
 import { setClassTime } from '../redux/actions/AbsenceActions'
-import { hasFileBeenModified, turnToNormalTime } from '../dataHelper'
+import { turnToNormalTime } from '../helpers/timeHelpers'
+import { backendGetData } from '../helpers/dataHelpers'
 
 class ClassTimeSelect extends Component {
   constructor(props) {
@@ -11,64 +11,19 @@ class ClassTimeSelect extends Component {
 
     this.state = {
       value: props.value,
-      fairfaxTimes: [],
-      chantillyTimes: [],
     }
-  }
-
-  componentDidMount() {
-    const fairfaxSavedData = JSON.parse(localStorage.getItem(process.env.CLASS_SCHEDULE_FAIRFAX))
-    const chantillySavedData = JSON.parse(localStorage.getItem(process.env.CLASS_SCHEDULE_CHANTILLY))
-
-    if (!fairfaxSavedData) {
-      this.backendGetData(process.env.CLASS_SCHEDULE_FAIRFAX)
-    } else if (fairfaxSavedData && process.env.NODE_ENV !== 'development' && hasFileBeenModified(fairfaxSavedData, process.env.CLASS_SCHEDULE_FAIRFAX)) {
-      this.backendGetData(process.env.CLASS_SCHEDULE_FAIRFAX)
-    } else {
-      const editedData = fairfaxSavedData.slice(1)
-      const fairfaxTimes = editedData.map(timeObj => turnToNormalTime(timeObj))
-      this.loadDataToState(fairfaxTimes, process.env.CLASS_SCHEDULE_FAIRFAX)
-    }
-
-    if (!chantillySavedData) {
-      this.backendGetData(process.env.CLASS_SCHEDULE_CHANTILLY)
-    } else if (chantillySavedData && process.env.NODE_ENV !== 'development' && hasFileBeenModified(chantillySavedData, process.env.CLASS_SCHEDULE_CHANTILLY)) {
-      this.backendGetData(process.env.CLASS_SCHEDULE_CHANTILLY)
-    } else {
-      const editedData = chantillySavedData.slice(1)
-      const chantillyTimes = editedData.map(timeObj => turnToNormalTime(timeObj))
-      this.loadDataToState(chantillyTimes, process.env.CLASS_SCHEDULE_CHANTILLY)
-    }
-  }
-
-  loadDataToState = (data, spreadsheetId) => {
-    if (spreadsheetId === process.env.CLASS_SCHEDULE_FAIRFAX) {
-      this.setState({ fairfaxTimes: data })
-    } else {
-      this.setState({ chantillyTimes: data })
-    }
-  }
-
-  backendGetData = (spreadsheetId) => {
-    axios
-      .get('/api/getFieldData', {
-        params: {
-          spreadsheetId,
-        },
-      })
-      .then((res) => {
-        this.loadDataToState(res.data)
-        const serializedData = JSON.stringify(res.data)
-        localStorage.setItem(spreadsheetId, serializedData)
-      })
   }
 
   timeOptions = () => {
-    const { fairfaxTimes, chantillyTimes } = this.state
-    const allClassTimes = Array.from(new Set([...fairfaxTimes, ...chantillyTimes]))
-    allClassTimes.sort((a, b) => new Date(`1970/01/01 ${a}`) - new Date(`1970/01/01 ${b}`))
+    const { fairfaxClassSchedule, chantillyClassSchedule, location } = this.props
 
-    return allClassTimes.map(time => <option key={time} value={time}>{time}</option>)
+    const normalTimes = location === 'Fairfax'
+      ? Array.from(new Set(fairfaxClassSchedule.map(timeObj => turnToNormalTime(timeObj))))
+      : Array.from(new Set(chantillyClassSchedule.map(timeObj => turnToNormalTime(timeObj))))
+
+    normalTimes.sort((a, b) => new Date(`1970/01/01 ${a}`) - new Date(`1970/01/01 ${b}`))
+
+    return normalTimes.map(time => <option key={time} value={time}>{time}</option>)
   }
 
   onChange = (event) => {
@@ -103,6 +58,15 @@ ClassTimeSelect.propTypes = {
   dispatch: PropTypes.func.isRequired,
   value: PropTypes.string,
   childIndex: PropTypes.number.isRequired,
+  location: PropTypes.string.isRequired,
+  fairfaxClassSchedule: PropTypes.arrayOf(PropTypes.objectOf(PropTypes.string)).isRequired,
+  chantillyClassSchedule: PropTypes.arrayOf(PropTypes.objectOf(PropTypes.string)).isRequired,
 }
 
-export default connect()(ClassTimeSelect)
+const mapDispatchToProps = (state, props) => ({
+  location: state.absenceChildren[props.childIndex].location,
+  fairfaxClassSchedule: state.fairfaxClassSchedule,
+  chantillyClassSchedule: state.chantillyClassSchedule,
+})
+
+export default connect(mapDispatchToProps)(ClassTimeSelect)

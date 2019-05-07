@@ -11,6 +11,8 @@ import Absence from './pages/Absence'
 import AbsenceConf from './pages/AbsenceConf'
 import AbsencePending from './pages/AbsencePending'
 import Makeup from './pages/Makeup'
+import { startGetData, startGetAllData } from './redux/actions/DataActions'
+import { batchActions, enableBatching, batchDispatchMiddleware } from 'redux-batched-actions'
 
 const markup = (
   <Provider store={store}>
@@ -29,4 +31,10 @@ const markup = (
   </Provider>
 )
 
-ReactDOM.render(markup, document.querySelector('#root'))
+ReactDOM.render(<p>Loading</p>, document.querySelector('#root'))
+
+store.dispatch(startGetAllData())
+  .then(() => {
+    console.log('rendering real')
+    ReactDOM.render(markup, document.querySelector('#root'))
+  })

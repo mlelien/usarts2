@@ -42,16 +42,6 @@ class Absence extends Component {
     }
   }
 
-  componentDidMount() {
-    if (process.env.NODE_ENV !== 'development') {
-      axios
-        .get('/api/allLastModified')
-        .then((response) => {
-          localStorage.setItem('dates', JSON.stringify(response.data))
-        })
-    }
-  }
-
   onSubmit = (event) => {
     event.preventDefault()
     const { history, dispatch } = this.props
@@ -140,7 +130,7 @@ Absence.propTypes = {
 }
 
 const mapDispatchToProps = state => ({
-  numChildren: state.length,
+  numChildren: state.absenceChildren.length,
 })
 
 export default withRouter(connect(mapDispatchToProps)(Absence))

@@ -57,10 +57,10 @@ class LocationRadio extends Component {
   }
 }
 
-LocationRadio.propTypes = {
-  dispatch: PropTypes.func.isRequired,
-  childIndex: PropTypes.number.isRequired,
-  value: PropTypes.string.isRequired,
-}
+// LocationRadio.propTypes = {
+//   dispatch: PropTypes.func.isRequired,
+//   childIndex: PropTypes.number.isRequired,
+//   value: PropTypes.string.isRequired,
+// }
 
 export default connect()(LocationRadio)

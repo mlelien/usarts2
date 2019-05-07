@@ -1,9 +1,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
-import axios from 'axios'
 import { setRoom } from '../redux/actions/AbsenceActions'
-import { hasFileBeenModified } from '../dataHelper'
 
 class RoomSelect extends Component {
   constructor(props) {
@@ -11,64 +9,15 @@ class RoomSelect extends Component {
 
     this.state = {
       value: props.value,
-      fairfaxRooms: [],
-      chantillyRooms: [],
     }
-  }
-
-  componentDidMount() {
-    const fairfaxRoomsData = JSON.parse(localStorage.getItem(process.env.ROOM_FAIRFAX))
-    const chantillyRoomsData = JSON.parse(localStorage.getItem(process.env.ROOM_CHANTILLY))
-
-    if (!fairfaxRoomsData) {
-      this.backendGetData(process.env.ROOM_FAIRFAX)
-    } else if (fairfaxRoomsData && process.env.NODE_ENV !== 'development' && hasFileBeenModified(fairfaxRoomsData, process.env.ROOM_FAIRFAX)) {
-      this.backendGetData(process.env.ROOM_FAIRFAX)
-    } else {
-      this.loadDataToState(fairfaxRoomsData, process.env.ROOM_FAIRFAX)
-    }
-
-    if (!chantillyRoomsData) {
-      this.backendGetData(process.env.ROOM_CHANTILY)
-    } else if (chantillyRoomsData && process.env.NODE_ENV !== 'development' && hasFileBeenModified(chantillyRoomsData, process.env.ROOM_CHANTILLY)) {
-      this.backendGetData(process.env.ROOM_CHANTILY)
-    } else {
-      this.loadDataToState(chantillyRoomsData, process.env.ROOM_CHANTILLY)
-    }
-  }
-
-  loadDataToState = (data, spreadsheetId) => {
-    const editedData = data.slice(1)
-    const rooms = editedData.map(room => room['Room No.'])
-
-    if (spreadsheetId === process.env.ROOM_FAIRFAX) {
-      this.setState({ fairfaxRooms: rooms })
-    } else {
-      this.setState({ chantillyRooms: rooms })
-    }
-  }
-
-  backendGetData = (spreadsheetId) => {
-    axios
-      .get('/api/getFieldData', {
-        params: {
-          spreadsheetId,
-        },
-      })
-      .then((res) => {
-        this.loadDataToState(res.data)
-        const serializedData = JSON.stringify(res.data)
-        localStorage.setItem(spreadsheetId, serializedData)
-      })
   }
 
   roomOptions = () => {
-    const { location } = this.props
-    const { fairfaxRooms, chantillyRooms } = this.state
-
+    const { location, fairfaxRooms, chantillyRooms } = this.props
+    console.log(fairfaxRooms)
     const roomsJSX = location === 'Fairfax'
-      ? fairfaxRooms.map(room => <option key={room} value={room}>{room}</option>)
-      : chantillyRooms.map(room => <option key={room} value={room}>{room}</option>)
+      ? fairfaxRooms.map(room => <option key={room['Room No.']} value={room['Room No.']}>{room['Room No.']}</option>)
+      : chantillyRooms.map(room => <option key={room['Room No.']} value={room['Room No.']}>{room['Room No.']}</option>)
 
     return roomsJSX
   }
@@ -105,10 +54,14 @@ RoomSelect.propTypes = {
   value: PropTypes.string,
   childIndex: PropTypes.number.isRequired,
   location: PropTypes.string.isRequired,
+  fairfaxRooms: PropTypes.arrayOf(PropTypes.objectOf(PropTypes.string)).isRequired,
+  chantillyRooms: PropTypes.arrayOf(PropTypes.objectOf(PropTypes.string)).isRequired,
 }
 
 const mapDispatchToProps = (state, props) => ({
-  location: state[props.childIndex].location,
+  location: state.absenceChildren[props.childIndex].location,
+  fairfaxRooms: state.fairfaxRooms,
+  chantillyRooms: state.chantillyRooms,
 })
 
 export default connect(mapDispatchToProps)(RoomSelect)

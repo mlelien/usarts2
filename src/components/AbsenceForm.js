@@ -103,7 +103,7 @@ AbsenceForm.propTypes = {
 }
 
 const mapDispatchToProps = (state, props) => ({
-  child: state[props.childIndex],
+  child: state.absenceChildren[props.childIndex],
 })
 
 export default withRouter(connect(mapDispatchToProps)(AbsenceForm))

@@ -35,6 +35,7 @@ jwtClient.authorize((err) => {
 })
 
 app.get('/api/allLastModified', (req, res) => {
+  console.log('allLastModified')
   const drive = google.drive('v3')
 
   drive.files
@@ -42,13 +43,16 @@ app.get('/api/allLastModified', (req, res) => {
       auth: jwtClient,
       fields: 'files(modifiedTime, name, id)',
     })
-    .then((response, err) => {
+    .then((response) => {
       const dataSendBack = response.data.files
       res.send(dataSendBack)
     })
 })
 
 app.get('/api/getFieldData', (req, res) => {
+  console.log('getFieldData')
+  // console.log(req)
+  console.log(req.query)
   const sheets = google.sheets('v4').spreadsheets.values
   const drive = google.drive('v3')
   const { spreadsheetId } = req.query

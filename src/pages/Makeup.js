@@ -6,8 +6,11 @@ import 'react-dates/initialize'
 import 'react-dates/lib/css/_datepicker.css'
 import '../css/Calendar.css'
 import { SingleDatePicker } from 'react-dates'
-import axios from 'axios'
-import { hasFileBeenModified, turnToNormalDate } from '../dataHelper'
+import { connect } from 'react-redux'
+import { hasFileBeenModified, getData } from '../helpers/dataHelpers'
+import {
+  turnToNormalDate, daysOnly, turnToNormalDay, turnToNormalTime,
+} from '../helpers/timeHelpers'
 import LocationRadio from '../components/calendar/LocationRadio'
 import RoomCheckbox from '../components/calendar/RoomCheckbox'
 
@@ -28,40 +31,50 @@ class Makeup extends Component {
     super(props)
 
     this.state = {
-      date: null,
-      fairfax: {
-        times: [],
-      },
-      // chantillyTimes: [],
+      selectedDate: null,
+      absences: [
+        new Array(31),
+        new Array(31),
+        new Array(31),
+        new Array(31),
+      ],
+      fairfaxClassSchedule: [],
+      fairfaxRooms: [],
     }
   }
 
   componentDidMount() {
-    const fairfaxSavedData = JSON.parse(localStorage.getItem(process.env.CLASS_SCHEDULE_FAIRFAX))
-    // const chantillySavedData = JSON.parse(localStorage.getItem(process.env.CLASS_SCHEDULE_CHANTILLY))
+    const fairfaxClassSchedule = getData(process.env.CLASS_SCHEDULE_FAIRFAX)
+    const fairfaxRooms = getData(process.env.ROOM_FAIRFAX)
+    const absences = getData(process.env.ABSENCES_SHEET)
 
-    if (!fairfaxSavedData) {
-      this.backendGetData(process.env.CLASS_SCHEDULE_FAIRFAX)
-    } else if (fairfaxSavedData && process.env.NODE_ENV !== 'development' && hasFileBeenModified(fairfaxSavedData, process.env.CLASS_SCHEDULE_FAIRFAX)) {
-      this.backendGetData(process.env.CLASS_SCHEDULE_FAIRFAX)
-    } else {
-      const editedData = fairfaxSavedData.slice(1)
-      const fairfaxTimes = editedData.map(timeObj => turnToNormalDate(timeObj))
-      console.log(fairfaxTimes[0])
-      this.setState({
-        fairfax: {
-          times: fairfaxTimes,
-        },
-      })
-      // this.loadDataToState(fairfaxTimes, process.env.CLASS_SCHEDULE_FAIRFAX)
-    }
+    this.loadDataToState(fairfaxClassSchedule.slice(1), process.env.CLASS_SCHEDULE_FAIRFAX)
+    this.loadDataToState(fairfaxRooms.slice(1), process.env.ROOM_FAIRFAX)
+    this.loadDataToState(absences.slice(1), process.env.ABSENCES_SHEET)
   }
 
   loadDataToState = (data, spreadsheetId) => {
-    if (spreadsheetId === process.env.CLASS_SCHEDULE_FAIRFAX) {
-      console.log(data)
+    if (spreadsheetId === process.env.ROOM_FAIRFAX) {
       this.setState({
-        fairfaxTimes: data,
+        fairfaxRooms: data,
+      })
+    } else if (spreadsheetId === process.env.ABSENCES_SHEET) {
+      data.forEach((absenceObj) => {
+        const absenceDateObj = moment(absenceObj['Absence Date'], 'MM/DD/YYYY')
+        const fourMonthsAgoDateObj = moment().subtract(4, 'months')
+        const absenceBetweenFourMonths = absenceDateObj.isBetween(fourMonthsAgoDateObj, moment().add(1, 'days'))
+
+        if (absenceBetweenFourMonths) {
+          this.setState((prevState) => {
+            const { absences } = prevState
+            const currMonth = moment().format('M')
+            const [month, day] = absenceObj['Absence Date'].split('/')
+            absences[currMonth - month][day] = absenceObj
+            return {
+              absences,
+            }
+          })
+        }
       })
     }
     // else {
@@ -69,60 +82,50 @@ class Makeup extends Component {
     // }
   }
 
-  backendGetData = (spreadsheetId) => {
-    axios
-      .get('/api/getFieldData', {
-        params: {
-          spreadsheetId,
-        },
-      })
-      .then((res) => {
-        this.loadDataToState(res.data)
-        const serializedData = JSON.stringify(res.data)
-        localStorage.setItem(spreadsheetId, serializedData)
-      })
-  }
+  onDateChange = (selectedDate) => {
+    const { fairfax } = this.props
+    // console.log(fairfax[selectedDate.day()])
 
-  onDateChange = (date) => {
-    if (date) {
-      this.setState(() => ({ date }))
+    if (selectedDate) {
+      this.setState(() => ({ selectedDate }))
     }
   }
 
   onCalendarFocusChanged = () => true
 
-  isOutsideRange = (day) => {
-    const { fairfaxTimes } = this.state
-    console.log(fairfaxTimes)
+  isOutsideRange = (calendarDay) => {
+    const isInPast = calendarDay.isBefore(moment())
+    const { fairfax } = this.props
+    const classOnDay = fairfax[Number(calendarDay.format('d'))].length !== 0
+    // const {
+    //   fairfaxClassSchedule, fairfaxRooms, absences,
+    // } = this.state
+    // console.log(fairfaxRooms)
+    // const { daysAvailable } = fairfax
+    // const isMatchingDay = daysAvailable.filter(day => day === Number(calendarDay.format('d'))).length === 0
 
-    const matches = fairfaxTimes.filter(time => time.isSame(day, 'day'))
-    return matches.length === 0
+    return isInPast || !classOnDay
   }
 
   render() {
-    const { date } = this.state
+    const {
+      selectedDate, fairfaxClassSchedule, fairfaxRooms, absences,
+    } = this.state
+    // console.log(fairfaxClassSchedule)
+    // console.log(fairfaxRooms)
+    // console.log(absences)
     return (
       <div className="container">
         <div className="title">Mark an Absence</div>
         <p>Please fill out an absence form before submitting a makeup request.</p>
         <Row>
           <SingleDatePicker
-            date={date}
+            date={selectedDate}
             onDateChange={this.onDateChange}
             focused
             onFocusChange={this.onCalendarFocusChanged}
             numberOfMonths={1}
-            isOutsideRange={(calendarDay) => {
-              const { times } = this.state.fairfax //eslint-disable-line
-              const matches = times.filter((fairfaxTime) => {
-                const day1 = fairfaxTime.format('dddd')
-                const day2 = calendarDay.format('dddd')
-
-                return day1 === day2
-              })
-
-              return matches.length === 0
-            }}
+            isOutsideRange={calendarDay => this.isOutsideRange(calendarDay)}
           />
           <LocationRadio />
           <div />
@@ -133,4 +136,23 @@ class Makeup extends Component {
   }
 }
 
-export default Makeup
+const mapDispatchToProps = (state) => {
+  const fairfaxClassSchedule = state.fairfaxClassSchedule.slice(1)
+
+  const fairfax = [[], [], [], [], [], [], []]
+
+  fairfaxClassSchedule.forEach((schedObj) => {
+    const dayNum = turnToNormalDay(schedObj)
+    const time = turnToNormalTime(schedObj)
+    fairfax[dayNum].push({
+      roomNumber: schedObj['Room No'],
+      time,
+    })
+  })
+
+  return {
+    fairfax,
+  }
+}
+
+export default connect(mapDispatchToProps)(Makeup)
