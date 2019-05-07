@@ -11,8 +11,8 @@ import Absence from './pages/Absence'
 import AbsenceConf from './pages/AbsenceConf'
 import AbsencePending from './pages/AbsencePending'
 import Makeup from './pages/Makeup'
-import { startGetData, startGetAllData } from './redux/actions/DataActions'
-import { batchActions, enableBatching, batchDispatchMiddleware } from 'redux-batched-actions'
+import { startGetAllData } from './redux/actions/DataActions'
+import Main from './pages/Main'
 
 const markup = (
   <Provider store={store}>
@@ -21,6 +21,7 @@ const markup = (
         <Header />
         <Navbar />
         <Switch>
+          <Route exact path='/' render={() => <Main />} />
           <Route exact path='/absence' render={() => <Absence />} />
           <Route exact path='/absence-confirmation' render={() => <AbsenceConf />} />
           <Route exact path='/absence-pending' render={() => <AbsencePending />} />
