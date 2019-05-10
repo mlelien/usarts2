@@ -2,6 +2,7 @@ import React from 'react'
 import '../css/styles.css'
 import '../css/AbsencePending.css'
 import PropTypes from 'prop-types'
+import moment from 'moment'
 
 const AbsencePendingDisplay = (props) => {
   const {
@@ -52,7 +53,7 @@ AbsencePendingDisplay.defaultProps = {
 }
 
 AbsencePendingDisplay.propTypes = {
-  date: PropTypes.object.isRequired,
+  date: PropTypes.instanceOf(moment).isRequired,
   location: PropTypes.string.isRequired,
   lastName: PropTypes.string.isRequired,
   firstName: PropTypes.string.isRequired,

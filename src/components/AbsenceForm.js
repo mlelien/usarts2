@@ -1,9 +1,6 @@
+/* eslint-disable no-tabs */
 import React from 'react'
-import '../css/Absence.css'
-import '../css/styles.css'
-import styled from 'styled-components'
 import { withRouter } from 'react-router-dom'
-
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import EnterDate from './EnterDate'
@@ -13,15 +10,9 @@ import { setFirstName, setLastName, setStudentID } from '../redux/actions/Absenc
 import RoomSelect from './RoomSelect'
 import ClassTimeSelect from './ClassTimeSelect'
 import SchoolPickupSelect from './SchoolPickupSelect'
-
-const Row = styled.div`
-	display: flex; 
-  margin-bottom: 3rem;
-`
-
-const RowItem = styled.div`
-	margin-right: 8rem;
-`
+import { Row, RowItem } from '../css/testtest'
+import '../css/Absence.css'
+import '../css/styles.css'
 
 const AbsenceForm = (props) => {
   const { childIndex, child } = props

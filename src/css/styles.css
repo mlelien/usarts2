@@ -45,3 +45,11 @@
   padding-top:40px;
   text-align:center;
 }
+
+.grid {
+  display: grid;
+  grid-column-start: 2;
+  grid-row-start: 2;
+  grid-template-rows: 20% 20% 20% 20% 20%;
+  grid-gap: 1rem;
+}

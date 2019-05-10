@@ -14,7 +14,7 @@ class SchoolPickupSelect extends Component {
 
   schoolPickupOptions = () => {
     const { location, fairfaxSchools, chantillySchools } = this.props
-    console.log(fairfaxSchools)
+
     return location === 'Fairfax'
       ? fairfaxSchools.map(school => <option key={school['School Name']} value={school['School Name']}>{school['School Name']}</option>)
       : chantillySchools.map(school => <option key={school['School Name']} value={school['School Name']}>{school['School Name']}</option>)

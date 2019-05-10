@@ -6,12 +6,15 @@
   border-right: 33px solid #D12F24;
 }
 
+.SingleDatePicker {
+  width: 32rem;
+}
+
 .CalendarDay__selected {
   background: #D12F24;
   border: 1px solid #D12F24;
   color: white;
 }
-
 
 .CalendarDay__selected:hover {
   background: rgba(209, 48, 36, 0.637);

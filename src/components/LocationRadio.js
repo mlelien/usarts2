@@ -1,14 +1,9 @@
 import React, { Component } from 'react'
 import '../css/Absence.css'
-import styled from 'styled-components'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
+import { Radio } from '../css/testtest'
 import { setLocation } from '../redux/actions/AbsenceActions'
-
-const Radio = styled.input`
-  margin-right: 2rem;
-  margin-bottom: 1rem;
-`
 
 class LocationRadio extends Component {
   constructor(props) {

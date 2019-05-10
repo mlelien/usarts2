@@ -1,0 +1,22 @@
+.selector {
+  display: grid;
+}
+
+ul {
+  list-style: none;
+  padding: 0;
+}
+
+th {
+  font-weight: normal;
+}
+
+button {
+  border-radius: 2px;
+  background-color: #F26056;
+  margin: 0;
+}
+
+button:hover {
+  opacity: 0.5;
+}

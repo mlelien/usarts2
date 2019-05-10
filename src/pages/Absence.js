@@ -6,10 +6,8 @@ import styled from 'styled-components'
 import { withRouter } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { history as historyPropTypes } from 'history-prop-types'
-import axios from 'axios'
 import AbsenceForm from '../components/AbsenceForm'
-import { setRepeatedAbsences, addChild, clearAbsences } from '../redux/actions/AbsenceActions'
-import TextInput from '../components/TextInput'
+import { setRepeatedAbsences, addChild } from '../redux/actions/AbsenceActions'
 
 const Row = styled.div`
   display: flex;
@@ -44,7 +42,7 @@ class Absence extends Component {
 
   onSubmit = (event) => {
     event.preventDefault()
-    const { history, dispatch } = this.props
+    const { history } = this.props
 
     // TODO: make sure all req fields are filled
     // if (firstName !== '' && lastName !== '') {
@@ -84,7 +82,6 @@ class Absence extends Component {
 
   render() {
     // TODO: forgot text at the end about making up absences
-    const { repeatedAbsences } = this.props
 
     return (
       <div className="container">
@@ -116,12 +113,8 @@ class Absence extends Component {
     )
   }
 }
-Absence.defaultProps = {
-  repeatedAbsences: '',
-}
 
 Absence.propTypes = {
-  repeatedAbsences: PropTypes.string,
   history: PropTypes.shape({
     historyPropTypes,
   }).isRequired,

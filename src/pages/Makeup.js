@@ -1,29 +1,30 @@
+/* eslint-disable react/jsx-one-expression-per-line */
 import React, { Component } from 'react'
 import moment from 'moment'
-import 'react-big-calendar/lib/css/react-big-calendar.css'
 import styled from 'styled-components'
-import 'react-dates/initialize'
-import 'react-dates/lib/css/_datepicker.css'
-import '../css/Calendar.css'
 import { SingleDatePicker } from 'react-dates'
 import { connect } from 'react-redux'
-import { hasFileBeenModified, getData } from '../helpers/dataHelpers'
-import {
-  turnToNormalDate, daysOnly, turnToNormalDay, turnToNormalTime,
-} from '../helpers/timeHelpers'
+import PropTypes from 'prop-types'
 import LocationRadio from '../components/calendar/LocationRadio'
 import RoomCheckbox from '../components/calendar/RoomCheckbox'
 
+import 'react-big-calendar/lib/css/react-big-calendar.css'
+import 'react-dates/initialize'
+import 'react-dates/lib/css/_datepicker.css'
+import '../css/Calendar.css'
+import '../css/Makeup.css'
+import {
+  getAbsences, getRooms, getClassSchedule, absencesPropTypes, classSchedulePropTypes,
+} from '../helpers/makeupHelpers'
+
 const Row = styled.div`
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-start;
   margin-bottom: 3rem;
 `
 
 const RowItem = styled.div`
-align-content: space-between;
-align-items: space-between;
-  justify-content: space-between;
+  margin-right: 5rem;
 `
 
 class Makeup extends Component {
@@ -32,127 +33,152 @@ class Makeup extends Component {
 
     this.state = {
       selectedDate: null,
-      absences: [
-        new Array(31),
-        new Array(31),
-        new Array(31),
-        new Array(31),
-      ],
-      fairfaxClassSchedule: [],
-      fairfaxRooms: [],
+      showRooms: [],
+      times: [],
+      availabilityBtns: [],
     }
   }
 
-  componentDidMount() {
-    const fairfaxClassSchedule = getData(process.env.CLASS_SCHEDULE_FAIRFAX)
-    const fairfaxRooms = getData(process.env.ROOM_FAIRFAX)
-    const absences = getData(process.env.ABSENCES_SHEET)
+  getAvailabilityCount = (roomObj, month, day) => {
+    const { fairfaxRooms, absences } = this.props
+    const { roomNumber } = roomObj
 
-    this.loadDataToState(fairfaxClassSchedule.slice(1), process.env.CLASS_SCHEDULE_FAIRFAX)
-    this.loadDataToState(fairfaxRooms.slice(1), process.env.ROOM_FAIRFAX)
-    this.loadDataToState(absences.slice(1), process.env.ABSENCES_SHEET)
-  }
+    const max = fairfaxRooms[roomNumber]
+    let absenceCount = 0
 
-  loadDataToState = (data, spreadsheetId) => {
-    if (spreadsheetId === process.env.ROOM_FAIRFAX) {
-      this.setState({
-        fairfaxRooms: data,
-      })
-    } else if (spreadsheetId === process.env.ABSENCES_SHEET) {
-      data.forEach((absenceObj) => {
-        const absenceDateObj = moment(absenceObj['Absence Date'], 'MM/DD/YYYY')
-        const fourMonthsAgoDateObj = moment().subtract(4, 'months')
-        const absenceBetweenFourMonths = absenceDateObj.isBetween(fourMonthsAgoDateObj, moment().add(1, 'days'))
-
-        if (absenceBetweenFourMonths) {
-          this.setState((prevState) => {
-            const { absences } = prevState
-            const currMonth = moment().format('M')
-            const [month, day] = absenceObj['Absence Date'].split('/')
-            absences[currMonth - month][day] = absenceObj
-            return {
-              absences,
-            }
-          })
-        }
-      })
+    if (absences[month] && absences[month][day]) {
+      absenceCount = absences[month][day]
     }
-    // else {
-    //   this.setState({ chantillyTimes: data })
-    // }
+
+    return max - absenceCount
   }
+
+  getUniqueElem = arr => Array.from(new Set(arr))
 
   onDateChange = (selectedDate) => {
-    const { fairfax } = this.props
-    // console.log(fairfax[selectedDate.day()])
+    const { fairfaxClassSchedule } = this.props
 
     if (selectedDate) {
-      this.setState(() => ({ selectedDate }))
+      const currData = fairfaxClassSchedule[selectedDate.day()]
+      const showRooms = []
+      const availabilityBtns = []
+      let times = []
+
+      const [month, day] = selectedDate.format('l').split('/')
+      currData.forEach((roomObj) => {
+        const { roomNumber, time } = roomObj
+
+        const availability = this.getAvailabilityCount(roomObj, month, day)
+        showRooms.push(`Room ${roomNumber}`)
+        times.push(time)
+        availabilityBtns.push({
+          time,
+          roomNumber,
+          text: `${availability} spot${availability > 1 && 's'}`,
+        })
+      })
+
+      times = this.getUniqueElem(times)
+      const showRoomsJSX = this.getUniqueElem(showRooms).map(room => <th>{room}</th>)
+
+      this.setState(() => ({
+        selectedDate,
+        showRooms: showRoomsJSX,
+        availabilityBtns,
+        times,
+      }))
     }
   }
-
-  onCalendarFocusChanged = () => true
 
   isOutsideRange = (calendarDay) => {
     const isInPast = calendarDay.isBefore(moment())
-    const { fairfax } = this.props
-    const classOnDay = fairfax[Number(calendarDay.format('d'))].length !== 0
-    // const {
-    //   fairfaxClassSchedule, fairfaxRooms, absences,
-    // } = this.state
-    // console.log(fairfaxRooms)
-    // const { daysAvailable } = fairfax
-    // const isMatchingDay = daysAvailable.filter(day => day === Number(calendarDay.format('d'))).length === 0
+    const { fairfaxClassSchedule } = this.props
+    const classOnDay = fairfaxClassSchedule[Number(calendarDay.format('d'))].length !== 0
 
     return isInPast || !classOnDay
   }
 
+  getAvailabilityItemJSX = (btns, time) => {
+    const jsx = []
+
+    jsx.push(<th>{time}</th>)
+    const rowBtn = btns.filter(btn => btn.time === time)
+    rowBtn.forEach((btn) => {
+      jsx.push(<td><button type='button'>{btn.text}</button></td>)
+    })
+
+    return jsx
+  }
+
+  showAvailabilityRows = () => {
+    const { times, availabilityBtns } = this.state
+    const jsx = []
+
+    times.forEach((time) => {
+      jsx.push(<tr>{this.getAvailabilityItemJSX(availabilityBtns, time)}</tr>)
+    })
+
+    return jsx
+  }
+
   render() {
     const {
-      selectedDate, fairfaxClassSchedule, fairfaxRooms, absences,
+      selectedDate, fairfaxClassSchedule, fairfaxRooms, absences, showRooms, times, availabilityBtns,
     } = this.state
-    // console.log(fairfaxClassSchedule)
-    // console.log(fairfaxRooms)
-    // console.log(absences)
+
     return (
       <div className="container">
         <div className="title">Mark an Absence</div>
         <p>Please fill out an absence form before submitting a makeup request.</p>
         <Row>
-          <SingleDatePicker
-            date={selectedDate}
-            onDateChange={this.onDateChange}
-            focused
-            onFocusChange={this.onCalendarFocusChanged}
-            numberOfMonths={1}
-            isOutsideRange={calendarDay => this.isOutsideRange(calendarDay)}
-          />
-          <LocationRadio />
-          <div />
-          <RoomCheckbox />
+          <RowItem>
+            <SingleDatePicker
+              date={selectedDate}
+              onDateChange={this.onDateChange}
+              focused
+              onFocusChange={() => true}
+              numberOfMonths={1}
+              isOutsideRange={calendarDay => this.isOutsideRange(calendarDay)}
+            />
+          </RowItem>
+          <RowItem>
+            <LocationRadio />
+            <RoomCheckbox />
+            {selectedDate && <p>Availability for <b>{selectedDate.format('dddd, MMM Do')}</b></p>}
+            <table>
+              <thead>
+                <tr>
+                  <th />
+                  {showRooms}
+                </tr>
+              </thead>
+              <tbody>
+                {this.showAvailabilityRows()}
+              </tbody>
+            </table>
+          </RowItem>
+          {/* <div /> */}
         </Row>
       </div>
     )
   }
 }
 
-const mapDispatchToProps = (state) => {
-  const fairfaxClassSchedule = state.fairfaxClassSchedule.slice(1)
-
-  const fairfax = [[], [], [], [], [], [], []]
-
-  fairfaxClassSchedule.forEach((schedObj) => {
-    const dayNum = turnToNormalDay(schedObj)
-    const time = turnToNormalTime(schedObj)
-    fairfax[dayNum].push({
-      roomNumber: schedObj['Room No'],
-      time,
-    })
-  })
+const mapStateToProps = (state) => {
+  const { fairfaxClassSchedule, fairfaxRooms, absences } = state
 
   return {
-    fairfax,
+    fairfaxClassSchedule: getClassSchedule(fairfaxClassSchedule),
+    fairfaxRooms: getRooms(fairfaxRooms),
+    absences: getAbsences(absences),
+    location: state.makeup.location,
   }
 }
 
-export default connect(mapDispatchToProps)(Makeup)
+Makeup.propTypes = {
+  absences: absencesPropTypes.isRequired,
+  fairfaxClassSchedule: classSchedulePropTypes.isRequired,
+  fairfaxRooms: PropTypes.arrayOf(PropTypes.string).isRequired,
+}
+
+export default connect(mapStateToProps)(Makeup)

@@ -14,7 +14,7 @@ class RoomSelect extends Component {
 
   roomOptions = () => {
     const { location, fairfaxRooms, chantillyRooms } = this.props
-    console.log(fairfaxRooms)
+
     const roomsJSX = location === 'Fairfax'
       ? fairfaxRooms.map(room => <option key={room['Room No.']} value={room['Room No.']}>{room['Room No.']}</option>)
       : chantillyRooms.map(room => <option key={room['Room No.']} value={room['Room No.']}>{room['Room No.']}</option>)

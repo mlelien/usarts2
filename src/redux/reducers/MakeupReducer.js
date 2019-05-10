@@ -1,45 +1,28 @@
-// import { chantillyClassScheduleReducer, fairfaxClassScheduleReducer } from './DataReducer'
+const makeupReducer = (state = {}, action) => {
+  switch (action.type) {
+    case 'MAKEUP_LOCATION_CHANGED':
+      return {
+        ...state,
+        location: action.location,
+      }
 
-// const fairfaxRooms = []
-// fairfaxClassScheduleReducer().forEach((roomObj) => {
-//   // console.log(roomObj)
-//   // console.log(roomObj['Room No'])
-//   fairfaxRooms[roomObj['Room No']] = true
-// })
+    case 'SET_CHECKBOX_DEFAULT':
+      return {
+        ...state,
+        roomsCheckboxes: action.data,
+      }
 
-// const chantillyRooms = []
-// chantillyClassScheduleReducer().forEach((roomObj) => {
-//   chantillyRooms[roomObj['Room No']] = true
-// })
+    case 'ROOM_CHECKBOX_TOGGLE':
+      const roomsCheckboxes = [...state.roomsCheckboxes]
+      roomsCheckboxes[action.roomNumber] = !action.isChecked
 
-// const defaultState = {
-//   fairfaxRooms,
-//   chantillyRooms,
-// }
+      return {
+        ...state,
+        roomsCheckboxes,
+      }
+    default:
+      return state
+  }
+}
 
-// const makeupReducer = (state = defaultState, action) => {
-//   const rooms = action.location === 'Fairfax' ? state.fairfaxRooms : state.chantillyRooms
-
-//   const isChecked = rooms[action.roomNumber]
-//   rooms[action.roomNumber] = !isChecked
-
-//   return action.location === 'Fairfax' ? ({
-//     ...state,
-//     fairfaxRooms: rooms,
-//   }) : ({
-//     ...state,
-//     chantillyRooms: rooms,
-//   })
-// }
-
-
-// // switch (action.type) {
-// //   case 'ROOM_CHECKBOX_TOGGLE':
-// //     rooms[action.roomNumber] = !rooms[action.roomNumber]
-// //     break
-
-// //   default:
-// //     return state
-// // }
-
-// export default makeupReducer
+export default makeupReducer

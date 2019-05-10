@@ -3,7 +3,6 @@ import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { setClassTime } from '../redux/actions/AbsenceActions'
 import { turnToNormalTime } from '../helpers/timeHelpers'
-import { backendGetData } from '../helpers/dataHelpers'
 
 class ClassTimeSelect extends Component {
   constructor(props) {

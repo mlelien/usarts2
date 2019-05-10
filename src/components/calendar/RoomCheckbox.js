@@ -1,54 +1,42 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
-import axios from 'axios'
-import { setRoom } from '../../redux/actions/AbsenceActions'
-import { hasFileBeenModified } from '../../helpers/dataHelpers'
 import { roomCheckboxToggle } from '../../redux/actions/MakeupActions'
+import '../../css/Checkbox.css'
 
 class RoomCheckbox extends Component {
-  constructor(props) {
-    super(props)
-
-    this.state = {
-      checked: 1,
-    }
-  }
-
   onChange = (event) => {
     const { dispatch } = this.props
-    dispatch(roomCheckboxToggle(true, 'Fairfax', 3))
+    dispatch(roomCheckboxToggle(!event.target.checked, Number(event.target.name) - 1))
   }
 
   roomCheckboxes = () => {
-    const { location, fairfaxRooms, chantillyRooms } = this.props
-    const { checked } = this.state
+    const {
+      location, fairfaxRooms, chantillyRooms, checkboxes,
+    } = this.props
 
-    const roomsJSX = location === 'Fairfax'
-      ? fairfaxRooms.map(roomObj => (
-        <label>
-          <input
-            type='checkbox'
-            name={roomObj['Room No.']}
-            key={roomObj['Room No.']}
-            onChange={this.onChange}
-            checked
-          />
-          {roomObj['Room No.']}
-        </label>
-      ))
-      : chantillyRooms.map(roomObj => (
-        <label>
-          <input
-            type='checkbox'
-            name={roomObj['Room No.']}
-            key={roomObj['Room No.']}
-            onChange={this.onChange}
-            checked
-          />
-          {roomObj['Room No.']}
-        </label>
-      ))
+    const rooms = location === 'Fairfax' ? fairfaxRooms : chantillyRooms
+
+    const roomsJSX = rooms.map((roomObj) => {
+      const roomNumber = roomObj['Room No.']
+
+      const checkboxJSX = (
+        <li key={roomNumber}>
+          <label className='checkbox-label'>
+            <input
+              type='checkbox'
+              name={roomNumber}
+              key={roomNumber}
+              onChange={this.onChange}
+              checked={checkboxes[roomNumber - 1]}
+            />
+            {roomNumber}
+          </label>
+        </li>
+      )
+
+      return checkboxJSX
+    })
 
     return roomsJSX
   }
@@ -56,20 +44,24 @@ class RoomCheckbox extends Component {
   render() {
     return (
       <label className='input-group'>
-        <span>Room #</span>
-        {this.roomCheckboxes()}
+        <span>Room #(s):</span>
+        <ul>
+          {this.roomCheckboxes()}
+        </ul>
       </label>
     )
   }
 }
 
-RoomCheckbox.defaultProps = {
-  checked: '',
+RoomCheckbox.propTypes = {
+  dispatch: PropTypes.func.isRequired,
 }
 
-const mapDispatchToProps = state => ({
+const mapStateToProps = state => ({
   fairfaxRooms: state.fairfaxRooms,
   chantillyRooms: state.chantillyRooms,
+  location: state.makeup.location,
+  checkboxes: state.makeup.roomsCheckboxes,
 })
 
-export default connect(mapDispatchToProps)(RoomCheckbox)
+export default connect(mapStateToProps)(RoomCheckbox)

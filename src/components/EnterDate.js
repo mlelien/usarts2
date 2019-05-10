@@ -52,6 +52,7 @@ class EnterDate extends Component {
 }
 
 EnterDate.propTypes = {
+  value: PropTypes.instanceOf(moment).isRequired,
   dispatch: PropTypes.func.isRequired,
   childIndex: PropTypes.number.isRequired,
 }

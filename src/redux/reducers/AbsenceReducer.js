@@ -12,7 +12,7 @@ const absenceDefaultState = [{
   repeatedAbsences: '',
 }]
 
-const AbsenceReducer = (state = absenceDefaultState, action) => {
+const absenceChildrenReducer = (state = absenceDefaultState, action) => {
   const prevChild = state[state.length - 1]
 
   switch (action.type) {
@@ -126,4 +126,4 @@ const AbsenceReducer = (state = absenceDefaultState, action) => {
   }
 }
 
-export default AbsenceReducer
+export default absenceChildrenReducer

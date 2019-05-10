@@ -36,6 +36,5 @@ ReactDOM.render(<p>Loading</p>, document.querySelector('#root'))
 
 store.dispatch(startGetAllData())
   .then(() => {
-    console.log('rendering real')
     ReactDOM.render(markup, document.querySelector('#root'))
   })

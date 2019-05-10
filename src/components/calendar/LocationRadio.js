@@ -1,28 +1,24 @@
 import React, { Component } from 'react'
 import '../../css/Absence.css'
-import styled from 'styled-components'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
-import { setLocation } from '../../redux/actions/AbsenceActions'
-
-const Radio = styled.input`
-  margin-right: 2rem;
-  margin-bottom: 1rem;
-`
+import { Radio } from '../../css/testtest'
+import { setMakeupLocation } from '../../redux/actions/MakeupActions'
 
 class LocationRadio extends Component {
   constructor(props) {
     super(props)
 
+    props.dispatch(setMakeupLocation('Fairfax'))
     this.state = {
-      location: props.value,
+      location: 'Fairfax',
     }
   }
 
   onChange = (event) => {
-    const { dispatch, childIndex } = this.props
+    const { dispatch } = this.props
 
-    // dispatch(setLocation(event.target.value, childIndex))
+    dispatch(setMakeupLocation(event.target.value))
     this.setState({
       location: event.target.value,
     })
@@ -33,7 +29,7 @@ class LocationRadio extends Component {
 
     return (
       <div className='input-group'>
-        <span>Location</span>
+        <span>Location:</span>
         <label>
           <Radio
             type='radio'
@@ -57,10 +53,8 @@ class LocationRadio extends Component {
   }
 }
 
-// LocationRadio.propTypes = {
-//   dispatch: PropTypes.func.isRequired,
-//   childIndex: PropTypes.number.isRequired,
-//   value: PropTypes.string.isRequired,
-// }
+LocationRadio.propTypes = {
+  dispatch: PropTypes.func.isRequired,
+}
 
 export default connect()(LocationRadio)
