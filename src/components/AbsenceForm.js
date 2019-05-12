@@ -13,27 +13,28 @@ import SchoolPickupSelect from './SchoolPickupSelect'
 import { Row, RowItem } from '../css/testtest'
 import '../css/Absence.css'
 import '../css/styles.css'
+import { childPropType } from '../helpers/propTypes'
 
 const AbsenceForm = (props) => {
   const { childIndex, child } = props
   const {
-    date, location, lastName, firstName, studentID, room, classTime,
+    lastName, firstName, studentID, room, classTime,
     schoolPickup,
   } = child
 
   return (
     <form>
       <Row>
+        <label className='input-group'>
+          <span>Location</span>
+          <LocationRadio childIndex={childIndex} />
+        </label>
+      </Row>
+      <Row>
         <RowItem>
           <label className='input-group'>
             <span>Absence Date</span>
-            <EnterDate childIndex={childIndex} value={date} />
-          </label>
-        </RowItem>
-        <RowItem>
-          <label className='input-group'>
-            <span>Location</span>
-            <LocationRadio childIndex={childIndex} value={location} />
+            <EnterDate childIndex={childIndex} />
           </label>
         </RowItem>
       </Row>
@@ -79,22 +80,12 @@ const AbsenceForm = (props) => {
 }
 
 AbsenceForm.propTypes = {
-  child: PropTypes.shape({
-    date: PropTypes.object.isRequired,
-    location: PropTypes.string.isRequired,
-    lastName: PropTypes.string.isRequired,
-    firstName: PropTypes.string.isRequired,
-    studentID: PropTypes.string,
-    room: PropTypes.string.isRequired,
-    classTime: PropTypes.string.isRequired,
-    schoolPickup: PropTypes.string,
-    repeatedAbsences: PropTypes.string,
-  }).isRequired,
+  child: childPropType.isRequired,
   childIndex: PropTypes.number.isRequired,
 }
 
-const mapDispatchToProps = (state, props) => ({
+const mapStateToProps = (state, props) => ({
   child: state.absenceChildren[props.childIndex],
 })
 
-export default withRouter(connect(mapDispatchToProps)(AbsenceForm))
+export default withRouter(connect(mapStateToProps)(AbsenceForm))

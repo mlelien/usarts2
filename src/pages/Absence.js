@@ -5,9 +5,10 @@ import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { withRouter } from 'react-router-dom'
 import { connect } from 'react-redux'
-import { history as historyPropTypes } from 'history-prop-types'
 import AbsenceForm from '../components/AbsenceForm'
 import { setRepeatedAbsences, addChild } from '../redux/actions/AbsenceActions'
+import { AddChildButton } from '../css/testtest'
+import { absenceChildrenPropTypes, historyPropType } from '../helpers/propTypes'
 
 const Row = styled.div`
   display: flex;
@@ -20,63 +21,44 @@ const RowItem = styled.div`
   align-items: center;
 `
 
-const AddChildButton = styled.button`
-  color: #D12F24;
-  background: #D8D8D8;
-  border: none;
-  border-radius: 3px;
-  height: 3.5rem;
-  width: 12rem;
-  font-size: 1.4rem;
-  margin: 0;
-`
-
 class Absence extends Component {
-  constructor(props) {
-    super(props)
-
-    this.state = {
-      numChildren: props.numChildren,
-    }
-  }
-
   onSubmit = (event) => {
     event.preventDefault()
-    const { history } = this.props
+    const { history, absenceChildren } = this.props
+    let isFilled = true
 
-    // TODO: make sure all req fields are filled
-    // if (firstName !== '' && lastName !== '') {
-    history.push('/absence-pending')
-    // }
+    absenceChildren.forEach((absenceObj) => {
+      const {
+        date, location, lastName, firstName, room, classTime,
+      } = absenceObj
+
+      if (date === null || location === '' || firstName === ''
+          || lastName === '' || room === '' || classTime === '') { isFilled = false }
+    })
+
+    if (isFilled) history.push('/absence-pending')
   }
 
   onAddChildBtnClicked = () => {
-    const { numChildren } = this.state
-    const { dispatch } = this.props
+    const { dispatch, absenceChildren } = this.props
 
-    if (numChildren < 4) {
+    if (absenceChildren.length < 4) {
       dispatch(addChild())
-
-      this.setState(prevState => ({
-        numChildren: prevState.numChildren + 1,
-      }))
     }
   }
 
   showAbsenceForm = () => {
-    const { numChildren } = this.state
+    const { absenceChildren } = this.props
     const forms = []
-    for (let i = 0; i < numChildren; i++) { forms.push(<AbsenceForm key={i} childIndex={i} />) }
+    for (let i = 0; i < absenceChildren.length; i++) { forms.push(<AbsenceForm key={i} childIndex={i} />) }
     return forms
   }
 
   onRepeatedAbsencesChange = (event) => {
-    const { dispatch } = this.props
-    const { numChildren } = this.state
-    const { value } = event.target
+    const { dispatch, absenceChildren } = this.props
 
-    for (let i = 0; i < numChildren; i++) {
-      dispatch(setRepeatedAbsences(value, i))
+    for (let i = 0; i < absenceChildren.length; i++) {
+      dispatch(setRepeatedAbsences(event.target.value, i))
     }
   }
 
@@ -115,15 +97,13 @@ class Absence extends Component {
 }
 
 Absence.propTypes = {
-  history: PropTypes.shape({
-    historyPropTypes,
-  }).isRequired,
+  history: historyPropType.isRequired,
   dispatch: PropTypes.func.isRequired,
-  numChildren: PropTypes.number.isRequired,
+  absenceChildren: absenceChildrenPropTypes.isRequired,
 }
 
-const mapDispatchToProps = state => ({
-  numChildren: state.absenceChildren.length,
+const mapStateToProps = state => ({
+  absenceChildren: state.absenceChildren,
 })
 
-export default withRouter(connect(mapDispatchToProps)(Absence))
+export default withRouter(connect(mapStateToProps)(Absence))

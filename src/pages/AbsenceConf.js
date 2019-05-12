@@ -5,6 +5,7 @@ import axios from 'axios'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import { clearAbsences } from '../redux/actions/AbsenceActions'
+import { absenceChildrenPropTypes } from '../helpers/propTypes'
 
 class AbsenceConf extends Component {
   componentDidMount() {
@@ -43,21 +44,11 @@ class AbsenceConf extends Component {
 
 AbsenceConf.propTypes = {
   dispatch: PropTypes.func.isRequired,
-  children: PropTypes.shape({
-    date: PropTypes.object.isRequired,
-    location: PropTypes.string.isRequired,
-    lastName: PropTypes.string.isRequired,
-    firstName: PropTypes.string.isRequired,
-    studentID: PropTypes.string,
-    room: PropTypes.string.isRequired,
-    classTime: PropTypes.string.isRequired,
-    schoolPickup: PropTypes.string,
-    repeatedAbsences: PropTypes.string,
-  }).isRequired,
+  children: absenceChildrenPropTypes.isRequired,
 }
 
-const mapDispatchToProps = state => ({
-  children: state,
+const mapStateToProps = state => ({
+  children: state.absenceChildren,
 })
 
-export default connect(mapDispatchToProps)(AbsenceConf)
+export default connect(mapStateToProps)(AbsenceConf)

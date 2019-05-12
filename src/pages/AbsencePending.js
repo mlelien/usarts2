@@ -6,6 +6,7 @@ import PropTypes from 'prop-types'
 import { history as historyPropTypes } from 'history-prop-types'
 import { withRouter } from 'react-router-dom'
 import AbsencePendingDisplay from '../components/AbsencePendingDisplay'
+import { absenceChildrenPropTypes, historyPropType } from '../helpers/propTypes'
 
 class AbsencePending extends Component {
   onEditBtnClicked = (event) => {
@@ -41,14 +42,13 @@ class AbsencePending extends Component {
   }
 }
 
-const mapDispatchToProps = state => ({
-  children: state,
+const mapStateToProps = state => ({
+  children: state.absenceChildren,
 })
 
 AbsencePending.propTypes = {
-  history: PropTypes.shape({
-    historyPropTypes,
-  }).isRequired,
+  history: historyPropType.isRequired,
+  children: absenceChildrenPropTypes.isRequired,
 }
 
-export default withRouter(connect(mapDispatchToProps)(AbsencePending))
+export default withRouter(connect(mapStateToProps)(AbsencePending))

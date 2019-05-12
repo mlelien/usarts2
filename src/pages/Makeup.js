@@ -5,8 +5,8 @@ import styled from 'styled-components'
 import { SingleDatePicker } from 'react-dates'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
-import LocationRadio from '../components/calendar/LocationRadio'
-import RoomCheckbox from '../components/calendar/RoomCheckbox'
+import LocationRadio from '../components/makeup/LocationRadio'
+import RoomCheckbox from '../components/makeup/RoomCheckbox'
 
 import 'react-big-calendar/lib/css/react-big-calendar.css'
 import 'react-dates/initialize'
@@ -14,8 +14,9 @@ import 'react-dates/lib/css/_datepicker.css'
 import '../css/Calendar.css'
 import '../css/Makeup.css'
 import {
-  getAbsences, getRooms, getClassSchedule, absencesPropTypes, classSchedulePropTypes,
+  getAbsences, getRooms, getClassSchedule, getUniqueElem,
 } from '../helpers/makeupHelpers'
+import { absencesPropTypes, makeupLocationPropTypes } from '../helpers/propTypes'
 
 const Row = styled.div`
   display: flex;
@@ -40,10 +41,10 @@ class Makeup extends Component {
   }
 
   getAvailabilityCount = (roomObj, month, day) => {
-    const { fairfaxRooms, absences } = this.props
+    const { fairfax, absences } = this.props
     const { roomNumber } = roomObj
 
-    const max = fairfaxRooms[roomNumber]
+    const max = fairfax.rooms[roomNumber]
     let absenceCount = 0
 
     if (absences[month] && absences[month][day]) {
@@ -53,21 +54,23 @@ class Makeup extends Component {
     return max - absenceCount
   }
 
-  getUniqueElem = arr => Array.from(new Set(arr))
+  setTableData = (selectedDate) => {
+    const {
+      fairfax, chantilly, location, roomsChecked,
+    } = this.props
+    console.log('setTableData')
+    const { classSchedule } = location === 'Fairfax' ? fairfax : chantilly
 
-  onDateChange = (selectedDate) => {
-    const { fairfaxClassSchedule } = this.props
+    const currData = classSchedule[selectedDate.day()]
+    const showRooms = []
+    const availabilityBtns = []
+    let times = []
 
-    if (selectedDate) {
-      const currData = fairfaxClassSchedule[selectedDate.day()]
-      const showRooms = []
-      const availabilityBtns = []
-      let times = []
+    const [month, day] = selectedDate.format('l').split('/')
+    currData.forEach((roomObj) => {
+      const { roomNumber, time } = roomObj
 
-      const [month, day] = selectedDate.format('l').split('/')
-      currData.forEach((roomObj) => {
-        const { roomNumber, time } = roomObj
-
+      if (roomsChecked[roomNumber - 1]) {
         const availability = this.getAvailabilityCount(roomObj, month, day)
         showRooms.push(`Room ${roomNumber}`)
         times.push(time)
@@ -76,24 +79,31 @@ class Makeup extends Component {
           roomNumber,
           text: `${availability} spot${availability > 1 && 's'}`,
         })
-      })
+      }
+    })
 
-      times = this.getUniqueElem(times)
-      const showRoomsJSX = this.getUniqueElem(showRooms).map(room => <th>{room}</th>)
+    times = getUniqueElem(times)
+    const showRoomsJSX = getUniqueElem(showRooms).map(room => <th key={room}>{room}</th>)
 
-      this.setState(() => ({
-        selectedDate,
-        showRooms: showRoomsJSX,
-        availabilityBtns,
-        times,
-      }))
-    }
+    this.setState(() => ({
+      selectedDate,
+      showRooms: showRoomsJSX,
+      availabilityBtns,
+      times,
+    }))
+  }
+
+  onDateChange = (selectedDate) => {
+    this.setTableData(selectedDate)
   }
 
   isOutsideRange = (calendarDay) => {
+    // TODO: four month cut off
     const isInPast = calendarDay.isBefore(moment())
-    const { fairfaxClassSchedule } = this.props
-    const classOnDay = fairfaxClassSchedule[Number(calendarDay.format('d'))].length !== 0
+    const { fairfax, chantilly, location } = this.props
+    const classOnDay = location === 'Fairfax'
+      ? fairfax.classSchedule[Number(calendarDay.format('d'))].length !== 0
+      : chantilly.classSchedule[Number(calendarDay.format('d'))].length !== 0
 
     return isInPast || !classOnDay
   }
@@ -103,8 +113,8 @@ class Makeup extends Component {
 
     jsx.push(<th>{time}</th>)
     const rowBtn = btns.filter(btn => btn.time === time)
-    rowBtn.forEach((btn) => {
-      jsx.push(<td><button type='button'>{btn.text}</button></td>)
+    rowBtn.forEach((btn, i) => {
+      jsx.push(<td key={i}><button type='button'>{btn.text}</button></td>)
     })
 
     return jsx
@@ -114,8 +124,8 @@ class Makeup extends Component {
     const { times, availabilityBtns } = this.state
     const jsx = []
 
-    times.forEach((time) => {
-      jsx.push(<tr>{this.getAvailabilityItemJSX(availabilityBtns, time)}</tr>)
+    times.forEach((time, i) => {
+      jsx.push(<tr key={i}>{this.getAvailabilityItemJSX(availabilityBtns, time)}</tr>)
     })
 
     return jsx
@@ -123,7 +133,7 @@ class Makeup extends Component {
 
   render() {
     const {
-      selectedDate, fairfaxClassSchedule, fairfaxRooms, absences, showRooms, times, availabilityBtns,
+      selectedDate, showRooms,
     } = this.state
 
     return (
@@ -165,20 +175,31 @@ class Makeup extends Component {
 }
 
 const mapStateToProps = (state) => {
-  const { fairfaxClassSchedule, fairfaxRooms, absences } = state
+  const {
+    fairfaxClassSchedule, fairfaxRooms, chantillyClassSchedule, chantillyRooms, absences, makeup,
+  } = state
 
   return {
-    fairfaxClassSchedule: getClassSchedule(fairfaxClassSchedule),
-    fairfaxRooms: getRooms(fairfaxRooms),
+    fairfax: {
+      classSchedule: getClassSchedule(fairfaxClassSchedule),
+      rooms: getRooms(fairfaxRooms),
+    },
+    chantilly: {
+      classSchedule: getClassSchedule(chantillyClassSchedule),
+      rooms: getRooms(chantillyRooms),
+    },
     absences: getAbsences(absences),
-    location: state.makeup.location,
+    location: makeup.location,
+    roomsChecked: makeup.roomsCheckboxes,
   }
 }
 
 Makeup.propTypes = {
   absences: absencesPropTypes.isRequired,
-  fairfaxClassSchedule: classSchedulePropTypes.isRequired,
-  fairfaxRooms: PropTypes.arrayOf(PropTypes.string).isRequired,
+  fairfax: makeupLocationPropTypes.isRequired,
+  chantilly: makeupLocationPropTypes.isRequired,
+  location: PropTypes.string.isRequired,
+  roomsChecked: PropTypes.arrayOf(PropTypes.bool).isRequired,
 }
 
 export default connect(mapStateToProps)(Makeup)

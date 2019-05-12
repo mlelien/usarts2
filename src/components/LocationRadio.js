@@ -6,25 +6,14 @@ import { Radio } from '../css/testtest'
 import { setLocation } from '../redux/actions/AbsenceActions'
 
 class LocationRadio extends Component {
-  constructor(props) {
-    super(props)
-
-    this.state = {
-      location: props.value,
-    }
-  }
-
   onChange = (event) => {
     const { dispatch, childIndex } = this.props
 
     dispatch(setLocation(event.target.value, childIndex))
-    this.setState({
-      location: event.target.value,
-    })
   }
 
   render() {
-    const { location } = this.state
+    const { location } = this.props
 
     return (
       <div className='input-group'>
@@ -54,7 +43,11 @@ class LocationRadio extends Component {
 LocationRadio.propTypes = {
   dispatch: PropTypes.func.isRequired,
   childIndex: PropTypes.number.isRequired,
-  value: PropTypes.string.isRequired,
+  location: PropTypes.string.isRequired,
 }
 
-export default connect()(LocationRadio)
+const mapStateToProps = (state, props) => ({
+  location: state.absenceChildren[props.childIndex].location,
+})
+
+export default connect(mapStateToProps)(LocationRadio)

@@ -12,9 +12,8 @@ const setDefault = data => ({
 export const startSetDefault = location => (dispatch, getState) => {
   const state = getState()
   const roomsLength = location === 'Fairfax' ? state.fairfaxRooms.length : state.chantillyRooms.length
-  // const arr = Array(roomsLength).fill(true)
-  const arr = [true, true, true, true, true, false]
-  console.log(arr)
+  const arr = Array(roomsLength).fill(true)
+
   dispatch(setDefault(arr))
 }
 

@@ -1,24 +1,23 @@
-import moment from 'moment'
-
 const absenceDefaultState = [{
-  date: moment(),
+  date: null,
   location: 'Fairfax',
   lastName: '',
   firstName: '',
   studentID: '',
-  room: '1',
-  classTime: '9:00 AM',
+  room: '',
+  classTime: '',
   schoolPickup: 'None',
   repeatedAbsences: '',
 }]
 
 const absenceChildrenReducer = (state = absenceDefaultState, action) => {
   const prevChild = state[state.length - 1]
+  const newState = [...state]
 
   switch (action.type) {
     case 'ADD_CHILD':
-      state.push(prevChild)
-      return state
+      newState.push(prevChild)
+      return newState
 
     case 'CLEAR_ABSENCES':
       return absenceDefaultState

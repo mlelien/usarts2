@@ -2,42 +2,42 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { setRoom } from '../redux/actions/AbsenceActions'
+import { classScheduleModifiedPropTypes } from '../helpers/propTypes'
+import { getClassSchedule, getUniqueElem } from '../helpers/makeupHelpers'
 
 class RoomSelect extends Component {
-  constructor(props) {
-    super(props)
-
-    this.state = {
-      value: props.value,
-    }
-  }
-
   roomOptions = () => {
-    const { location, fairfaxRooms, chantillyRooms } = this.props
+    const {
+      location, fairfaxRooms, chantillyRooms, dayOfWeek, dispatch, childIndex, selectedRoom,
+    } = this.props
 
-    const roomsJSX = location === 'Fairfax'
-      ? fairfaxRooms.map(room => <option key={room['Room No.']} value={room['Room No.']}>{room['Room No.']}</option>)
-      : chantillyRooms.map(room => <option key={room['Room No.']} value={room['Room No.']}>{room['Room No.']}</option>)
+    if (dayOfWeek !== -1) {
+      const rooms = location === 'Fairfax'
+        ? getUniqueElem(fairfaxRooms[dayOfWeek].map(roomObj => roomObj.roomNumber))
+        : getUniqueElem(chantillyRooms[dayOfWeek].map(roomObj => roomObj.roomNumber))
 
-    return roomsJSX
+      const matchingRooms = rooms.filter(room => room === selectedRoom)
+      if (matchingRooms.length === 0) { dispatch(setRoom(rooms[0], childIndex)) }
+
+      return rooms.map(room => <option key={room} value={room}>{room}</option>)
+    }
+
+    return null
   }
 
   onChange = (event) => {
     const { dispatch, childIndex } = this.props
-    const { value } = event.target
 
-    dispatch(setRoom(value, childIndex))
-    this.setState({
-      value,
-    })
+    dispatch(setRoom(event.target.value, childIndex))
   }
 
   render() {
-    const { value } = this.state
+    const { selectedRoom } = this.props
+
     return (
       <label className='input-group'>
         <span>Room #</span>
-        <select className='select' value={value} onChange={this.onChange}>
+        <select className='select' value={selectedRoom} onChange={this.onChange}>
           {this.roomOptions()}
         </select>
       </label>
@@ -45,23 +45,27 @@ class RoomSelect extends Component {
   }
 }
 
-RoomSelect.defaultProps = {
-  value: '',
-}
-
 RoomSelect.propTypes = {
   dispatch: PropTypes.func.isRequired,
-  value: PropTypes.string,
   childIndex: PropTypes.number.isRequired,
   location: PropTypes.string.isRequired,
-  fairfaxRooms: PropTypes.arrayOf(PropTypes.objectOf(PropTypes.string)).isRequired,
-  chantillyRooms: PropTypes.arrayOf(PropTypes.objectOf(PropTypes.string)).isRequired,
+  dayOfWeek: PropTypes.number.isRequired,
+  selectedRoom: PropTypes.string.isRequired,
+  fairfaxRooms: classScheduleModifiedPropTypes.isRequired,
+  chantillyRooms: classScheduleModifiedPropTypes.isRequired,
 }
 
-const mapDispatchToProps = (state, props) => ({
-  location: state.absenceChildren[props.childIndex].location,
-  fairfaxRooms: state.fairfaxRooms,
-  chantillyRooms: state.chantillyRooms,
-})
+const mapStateToProps = (state, props) => {
+  const { date } = state.absenceChildren[props.childIndex]
+  const dayOfWeek = date ? date.day() : -1
 
-export default connect(mapDispatchToProps)(RoomSelect)
+  return {
+    location: state.absenceChildren[props.childIndex].location,
+    dayOfWeek,
+    fairfaxRooms: getClassSchedule(state.fairfaxClassSchedule),
+    selectedRoom: state.absenceChildren[props.childIndex].room,
+    chantillyRooms: getClassSchedule(state.chantillyClassSchedule),
+  }
+}
+
+export default connect(mapStateToProps)(RoomSelect)

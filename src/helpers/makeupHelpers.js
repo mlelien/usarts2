@@ -1,5 +1,4 @@
 import moment from 'moment'
-import PropTypes from 'prop-types'
 import { turnToNormalDay, turnToNormalTime } from './timeHelpers'
 
 export const getAbsences = (absencesData) => {
@@ -35,34 +34,17 @@ export const getRooms = (roomsData) => {
 }
 
 export const getClassSchedule = (scheduleData) => {
-  const fairfax = [[], [], [], [], [], [], []]
+  const daysOfWeek = [[], [], [], [], [], [], []]
 
   scheduleData.forEach((schedObj) => {
     const dayNum = turnToNormalDay(schedObj)
     const time = turnToNormalTime(schedObj)
-    fairfax[dayNum].push({
+    daysOfWeek[dayNum].push({
       roomNumber: schedObj['Room No'],
       time,
     })
   })
-  return fairfax
+  return daysOfWeek
 }
 
-export const absencesPropTypes = PropTypes.arrayOf(
-  PropTypes.arrayOf(
-    PropTypes.shape({
-      'Absence Date': PropTypes.string.isRequired,
-      'Last Name': PropTypes.string.isRequired,
-      Location: PropTypes.string.isRequired,
-    }),
-  ),
-)
-
-export const classSchedulePropTypes = PropTypes.arrayOf(
-  PropTypes.arrayOf(
-    PropTypes.shape({
-      roomNumber: PropTypes.string.isRequired,
-      time: PropTypes.string.isRequired,
-    }),
-  ),
-)
+export const getUniqueElem = arr => Array.from(new Set(arr))

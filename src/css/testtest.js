@@ -13,3 +13,14 @@ export const Radio = styled.input`
   margin-right: 2rem;
   margin-bottom: 1rem;
 `
+
+export const AddChildButton = styled.button`
+  color: #D12F24;
+  background: #D8D8D8;
+  border: none;
+  border-radius: 3px;
+  height: 3.5rem;
+  width: 12rem;
+  font-size: 1.4rem;
+  margin: 0;
+`
