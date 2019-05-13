@@ -21,7 +21,7 @@ const absenceChildrenReducer = (state = absenceDefaultState, action) => {
       return newState
 
     case 'REMOVE_CHILD':
-      newState = state.filter((child, i) => i !== action.childIndex)
+      newState = state.filter((_, i) => i !== action.childIndex)
       return newState
 
     case 'CLEAR_ABSENCES':
