@@ -12,11 +12,16 @@ const absenceDefaultState = [{
 
 const absenceChildrenReducer = (state = absenceDefaultState, action) => {
   const prevChild = state[state.length - 1]
-  const newState = [...state]
+  let newState
 
   switch (action.type) {
     case 'ADD_CHILD':
+      newState = [...state]
       newState.push(prevChild)
+      return newState
+
+    case 'REMOVE_CHILD':
+      newState = state.filter((child, i) => i !== action.childIndex)
       return newState
 
     case 'CLEAR_ABSENCES':

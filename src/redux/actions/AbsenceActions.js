@@ -56,6 +56,11 @@ export const addChild = () => ({
   type: 'ADD_CHILD',
 })
 
+export const removeChild = childIndex => ({
+  type: 'REMOVE_CHILD',
+  childIndex,
+})
+
 export const clearAbsences = () => ({
   type: 'CLEAR_ABSENCES',
 })

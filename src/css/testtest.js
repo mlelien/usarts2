@@ -14,7 +14,7 @@ export const Radio = styled.input`
   margin-bottom: 1rem;
 `
 
-export const AddChildButton = styled.button`
+export const SecondaryButton = styled.button`
   color: #D12F24;
   background: #D8D8D8;
   border: none;

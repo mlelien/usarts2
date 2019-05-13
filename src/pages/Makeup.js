@@ -54,11 +54,29 @@ class Makeup extends Component {
     return max - absenceCount
   }
 
+  setTableJSX = () => {
+    const { showRooms } = this.state
+
+    return (
+      <table>
+        <thead>
+          <tr>
+            <th />
+            {showRooms}
+          </tr>
+        </thead>
+        <tbody>
+          {this.showAvailabilityRows()}
+        </tbody>
+      </table>
+    )
+  }
+
   setTableData = (selectedDate) => {
     const {
       fairfax, chantilly, location, roomsChecked,
     } = this.props
-    console.log('setTableData')
+
     const { classSchedule } = location === 'Fairfax' ? fairfax : chantilly
 
     const currData = classSchedule[selectedDate.day()]
@@ -155,17 +173,7 @@ class Makeup extends Component {
             <LocationRadio />
             <RoomCheckbox />
             {selectedDate && <p>Availability for <b>{selectedDate.format('dddd, MMM Do')}</b></p>}
-            <table>
-              <thead>
-                <tr>
-                  <th />
-                  {showRooms}
-                </tr>
-              </thead>
-              <tbody>
-                {this.showAvailabilityRows()}
-              </tbody>
-            </table>
+            {this.setTableJSX()}
           </RowItem>
           {/* <div /> */}
         </Row>

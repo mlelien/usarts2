@@ -6,8 +6,8 @@ import styled from 'styled-components'
 import { withRouter } from 'react-router-dom'
 import { connect } from 'react-redux'
 import AbsenceForm from '../components/AbsenceForm'
-import { setRepeatedAbsences, addChild } from '../redux/actions/AbsenceActions'
-import { AddChildButton } from '../css/testtest'
+import { setRepeatedAbsences, addChild, removeChild } from '../redux/actions/AbsenceActions'
+import { SecondaryButton } from '../css/testtest'
 import { absenceChildrenPropTypes, historyPropType } from '../helpers/propTypes'
 
 const Row = styled.div`
@@ -47,10 +47,25 @@ class Absence extends Component {
     }
   }
 
+  removeChildClicked = (childIndex) => {
+    const { dispatch } = this.props
+    dispatch(removeChild(childIndex))
+  }
+
   showAbsenceForm = () => {
     const { absenceChildren } = this.props
     const forms = []
-    for (let i = 0; i < absenceChildren.length; i++) { forms.push(<AbsenceForm key={i} childIndex={i} />) }
+    for (let i = 0; i < absenceChildren.length; i++) {
+      const jsx = i === 0 ? (<AbsenceForm key={i} childIndex={i} />)
+        : (
+          <div key={i}>
+            <AbsenceForm childIndex={i} />
+            <SecondaryButton onClick={() => this.removeChildClicked(i)}>Remove Child</SecondaryButton>
+          </div>
+        )
+
+      forms.push(jsx)
+    }
     return forms
   }
 
@@ -71,7 +86,7 @@ class Absence extends Component {
         {this.showAbsenceForm()}
         <Row>
           <RowItem>
-            <AddChildButton onClick={this.onAddChildBtnClicked} type='button'>+ add child</AddChildButton>
+            <SecondaryButton onClick={this.onAddChildBtnClicked} type='button'>+ add child</SecondaryButton>
           </RowItem>
           <RowItem>
             <p>If your children attend class on different days, please fill out separate forms.</p>
