@@ -1,8 +1,9 @@
 {
   "scripts": {
-    "server": "NODE_ENV=production node server.js",
+    "server": "./node_modules/.bin/netlify-lambda serve src",
     "start": "webpack-dev-server",
-    "build": "webpack --mode production"
+    "build-webpack": "webpack --mode production",
+    "build": "./node_modules/.bin/netlify-lambda build src"
   },
   "dependencies": {
     "axios": "^0.18.0",
@@ -14,6 +15,7 @@
     "history-prop-types": "^2.5.2",
     "moment": "^2.24.0",
     "morgan": "^1.9.1",
+    "netlify-lambda": "^1.4.9",
     "prop-types": "^15.7.2",
     "react": "^16.8.6",
     "react-big-calendar": "^0.20.4",
@@ -23,6 +25,7 @@
     "react-router-dom": "^5.0.0",
     "redux": "^4.0.1",
     "redux-thunk": "^2.3.0",
+    "serverless-http": "^2.0.2",
     "styled-components": "^4.2.0"
   },
   "devDependencies": {

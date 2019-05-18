@@ -2,8 +2,6 @@ import React, { Component } from 'react'
 import '../css/styles.css'
 import '../css/AbsencePending.css'
 import { connect } from 'react-redux'
-import PropTypes from 'prop-types'
-import { history as historyPropTypes } from 'history-prop-types'
 import { withRouter } from 'react-router-dom'
 import AbsencePendingDisplay from '../components/AbsencePendingDisplay'
 import { absenceChildrenPropTypes, historyPropType } from '../helpers/propTypes'
@@ -26,7 +24,7 @@ class AbsencePending extends Component {
   showAbsencePendingPerChild = () => {
     const { children } = this.props
 
-    return children.map((child, i) => <AbsencePendingDisplay key={i} {...child} />)
+    return children.map(child => <AbsencePendingDisplay key={child.firstName + child.lastName + child.studentID} {...child} />)
   }
 
   render() {

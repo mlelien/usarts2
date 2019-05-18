@@ -26,6 +26,7 @@ class MakeupTable extends Component {
   }
 
   render() {
+    const { showRooms } = this.state
     return (
       <table>
         <thead>

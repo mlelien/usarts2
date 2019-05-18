@@ -16,14 +16,15 @@ class TextInput extends Component {
     const { dispatch, action, childIndex } = this.props
     const { value } = event.target
 
-    dispatch(action(value, childIndex))
+    if (childIndex === -1) { dispatch(action(value)) } else dispatch(action(value, childIndex))
+
     this.setState({
       value,
     })
   }
 
   render() {
-    const { label } = this.props
+    const { label, disabled } = this.props
     const { value } = this.state
 
     return (
@@ -34,6 +35,7 @@ class TextInput extends Component {
           type='text'
           value={value}
           onChange={this.onChange}
+          disabled={disabled}
         />
       </label>
     )
@@ -42,6 +44,8 @@ class TextInput extends Component {
 
 TextInput.defaultProps = {
   value: '',
+  disabled: false,
+  childIndex: -1,
 }
 
 TextInput.propTypes = {
@@ -49,7 +53,8 @@ TextInput.propTypes = {
   label: PropTypes.string.isRequired,
   action: PropTypes.func.isRequired,
   value: PropTypes.string,
-  childIndex: PropTypes.number.isRequired,
+  childIndex: PropTypes.number,
+  disabled: PropTypes.bool,
 }
 
 export default connect()(TextInput)

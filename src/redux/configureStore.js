@@ -5,7 +5,7 @@ import {
 import thunk from 'redux-thunk'
 import absenceChildrenReducer from './reducers/AbsenceReducer'
 import {
-  fairfaxClassScheduleReducer, chantillyClassScheduleReducer, chantillySchoolReducer, fairfaxSchoolReducer, chantillyRoomReducer, fairfaxRoomReducer, absencesReducer,
+  fairfaxClassScheduleReducer, chantillyClassScheduleReducer, chantillySchoolReducer, fairfaxSchoolReducer, chantillyRoomReducer, fairfaxRoomReducer, absencesReducer, makeupSheetsReducer,
 } from './reducers/DataReducer'
 import makeupReducer from './reducers/MakeupReducer'
 
@@ -15,6 +15,7 @@ const store = createStore(
   combineReducers({
     absenceChildren: absenceChildrenReducer,
     absences: absencesReducer,
+    makeupSheets: makeupSheetsReducer,
     makeup: makeupReducer,
     fairfaxClassSchedule: fairfaxClassScheduleReducer,
     chantillyClassSchedule: chantillyClassScheduleReducer,

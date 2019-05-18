@@ -20,6 +20,31 @@ const makeupReducer = (state = {}, action) => {
         ...state,
         roomsCheckboxes,
       }
+
+    case 'SET_MAKEUP_DATE':
+      return {
+        ...state,
+        date: action.date,
+      }
+
+    case 'SET_FIRST_NAME_MAKEUP':
+      return {
+        ...state,
+        firstName: action.firstName,
+      }
+
+    case 'SET_LAST_NAME_MAKEUP':
+      return {
+        ...state,
+        lastName: action.lastName,
+      }
+
+    case 'SET_STUDENT_ID_MAKEUP':
+      return {
+        ...state,
+        studentID: action.studentID,
+      }
+
     default:
       return state
   }

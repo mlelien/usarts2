@@ -20,3 +20,5 @@ module.exports = {
         "localStorage": true,
     }
 };
+//"server": "NODE_ENV=production node src/server.js",
+//"build": "webpack --mode production"

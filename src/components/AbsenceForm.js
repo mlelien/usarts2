@@ -14,6 +14,7 @@ import { Row, RowItem } from '../css/testtest'
 import '../css/Absence.css'
 import '../css/styles.css'
 import { childPropType } from '../helpers/propTypes'
+import TextInputAbsence from './TextInputAbsence'
 
 const AbsenceForm = (props) => {
   const { childIndex, child } = props

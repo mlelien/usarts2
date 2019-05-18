@@ -36,7 +36,12 @@ export const startGetAllData = () => dispatch => (
       .then((data) => {
         dispatch(getSpreadsheetData(process.env.ABSENCES_SHEET, data))
       }))
+    .then(() => getData(process.env.MAKEUPS_SHEET)
+      .then((data) => {
+        dispatch(getSpreadsheetData(process.env.MAKEUPS_SHEET, data))
+      }))
     .then(() => dispatch(startSetDefault('Fairfax')))
+
 )
 
 export default startGetAllData

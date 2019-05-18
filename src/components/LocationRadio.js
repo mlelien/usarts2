@@ -8,7 +8,6 @@ import { setLocation } from '../redux/actions/AbsenceActions'
 class LocationRadio extends Component {
   onChange = (event) => {
     const { dispatch, childIndex } = this.props
-
     dispatch(setLocation(event.target.value, childIndex))
   }
 
@@ -40,14 +39,22 @@ class LocationRadio extends Component {
   }
 }
 
+LocationRadio.defaultProps = {
+  childIndex: -1,
+}
+
 LocationRadio.propTypes = {
   dispatch: PropTypes.func.isRequired,
-  childIndex: PropTypes.number.isRequired,
+  childIndex: PropTypes.number,
   location: PropTypes.string.isRequired,
 }
 
-const mapStateToProps = (state, props) => ({
-  location: state.absenceChildren[props.childIndex].location,
-})
+const mapStateToProps = (state, props) => {
+  const { location } = props.childIndex > -1 ? state.absenceChildren[props.childIndex] : state.makeup
+
+  return {
+    location,
+  }
+}
 
 export default connect(mapStateToProps)(LocationRadio)

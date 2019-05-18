@@ -5,18 +5,21 @@ import styled from 'styled-components'
 import { SingleDatePicker } from 'react-dates'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
+import { withRouter, Link } from 'react-router-dom'
 import LocationRadio from '../components/makeup/LocationRadio'
 import RoomCheckbox from '../components/makeup/RoomCheckbox'
+import {
+  getAbsences, getRooms, getClassSchedule, getUniqueElem,
+} from '../helpers/makeupHelpers'
+import { absencesPropTypes, makeupLocationPropTypes, historyPropType } from '../helpers/propTypes'
+
 
 import 'react-big-calendar/lib/css/react-big-calendar.css'
 import 'react-dates/initialize'
 import 'react-dates/lib/css/_datepicker.css'
 import '../css/Calendar.css'
 import '../css/Makeup.css'
-import {
-  getAbsences, getRooms, getClassSchedule, getUniqueElem,
-} from '../helpers/makeupHelpers'
-import { absencesPropTypes, makeupLocationPropTypes } from '../helpers/propTypes'
+import { setMakeupDate } from '../redux/actions/MakeupActions'
 
 const Row = styled.div`
   display: flex;
@@ -34,15 +37,13 @@ class Makeup extends Component {
 
     this.state = {
       selectedDate: null,
-      showRooms: [],
-      times: [],
-      availabilityBtns: [],
     }
   }
 
-  getAvailabilityCount = (roomObj, month, day) => {
+  getAvailabilityCount = (roomObj, selectedDate) => {
     const { fairfax, absences } = this.props
     const { roomNumber } = roomObj
+    const [month, day] = selectedDate.format('l').split('/')
 
     const max = fairfax.rooms[roomNumber]
     let absenceCount = 0
@@ -55,64 +56,75 @@ class Makeup extends Component {
   }
 
   setTableJSX = () => {
-    const { showRooms } = this.state
+    const { selectedDate } = this.state
 
-    return (
-      <table>
-        <thead>
-          <tr>
-            <th />
-            {showRooms}
-          </tr>
-        </thead>
-        <tbody>
-          {this.showAvailabilityRows()}
-        </tbody>
-      </table>
-    )
+    if (selectedDate) {
+      const { roomsJSX, tableDataJSX } = this.setTableData(selectedDate)
+
+      return (
+        <table>
+          <thead>
+            <tr>
+              <th />
+              {roomsJSX}
+            </tr>
+          </thead>
+          <tbody>
+            {tableDataJSX}
+          </tbody>
+        </table>
+      )
+    }
+    return null
   }
 
   setTableData = (selectedDate) => {
-    const {
-      fairfax, chantilly, location, roomsChecked,
-    } = this.props
+    const { roomsChecked } = this.props
 
-    const { classSchedule } = location === 'Fairfax' ? fairfax : chantilly
+    const currData = this.getDataOnDay(selectedDate)
+    const showRooms = []; const availabilityBtns = []; let times = []
 
-    const currData = classSchedule[selectedDate.day()]
-    const showRooms = []
-    const availabilityBtns = []
-    let times = []
-
-    const [month, day] = selectedDate.format('l').split('/')
     currData.forEach((roomObj) => {
       const { roomNumber, time } = roomObj
 
       if (roomsChecked[roomNumber - 1]) {
-        const availability = this.getAvailabilityCount(roomObj, month, day)
         showRooms.push(`Room ${roomNumber}`)
         times.push(time)
-        availabilityBtns.push({
-          time,
-          roomNumber,
-          text: `${availability} spot${availability > 1 && 's'}`,
-        })
+        availabilityBtns.push(this.setAvailabilityBtn(roomObj, selectedDate, time, roomNumber))
       }
     })
 
     times = getUniqueElem(times)
-    const showRoomsJSX = getUniqueElem(showRooms).map(room => <th key={room}>{room}</th>)
+    const roomsJSX = getUniqueElem(showRooms).map(room => <th key={room}>{room}</th>)
+    const tableDataJSX = this.showTimesAndButtons(times, availabilityBtns)
 
-    this.setState(() => ({
-      selectedDate,
-      showRooms: showRoomsJSX,
-      availabilityBtns,
-      times,
-    }))
+    return {
+      roomsJSX,
+      tableDataJSX,
+    }
+  }
+
+  getDataOnDay = (selectedDate) => {
+    const { fairfax, chantilly, location } = this.props
+    const { classSchedule } = location === 'Fairfax' ? fairfax : chantilly
+
+    return classSchedule[selectedDate.day()]
+  }
+
+  setAvailabilityBtn = (roomObj, selectedDate, time, roomNumber) => {
+    const availability = this.getAvailabilityCount(roomObj, selectedDate)
+
+    return {
+      time,
+      roomNumber,
+      text: `${availability} spot${availability > 1 && 's'}`,
+    }
   }
 
   onDateChange = (selectedDate) => {
-    this.setTableData(selectedDate)
+    this.setState({
+      selectedDate,
+    })
   }
 
   isOutsideRange = (calendarDay) => {
@@ -126,20 +138,39 @@ class Makeup extends Component {
     return isInPast || !classOnDay
   }
 
+  onBtnClick = () => {
+    const { selectedDate } = this.state
+    const { dispatch } = this.props
+
+    dispatch(setMakeupDate(selectedDate.format('l')))
+  }
+
   getAvailabilityItemJSX = (btns, time) => {
+    const { selectedDate } = this.state
     const jsx = []
 
-    jsx.push(<th>{time}</th>)
+    jsx.push(<th key={time}>{time}</th>)
     const rowBtn = btns.filter(btn => btn.time === time)
     rowBtn.forEach((btn, i) => {
-      jsx.push(<td key={i}><button type='button'>{btn.text}</button></td>)
+      const location = {
+        pathname: '/makeup-continued',
+        date: selectedDate.format('l'),
+        time,
+      }
+
+      jsx.push(
+        <td key={i}>
+          <Link to={location} onClick={this.onBtnClick}>
+            <button type='button'>{btn.text}</button>
+          </Link>
+        </td>,
+      )
     })
 
     return jsx
   }
 
-  showAvailabilityRows = () => {
-    const { times, availabilityBtns } = this.state
+  showTimesAndButtons = (times, availabilityBtns) => {
     const jsx = []
 
     times.forEach((time, i) => {
@@ -150,9 +181,7 @@ class Makeup extends Component {
   }
 
   render() {
-    const {
-      selectedDate, showRooms,
-    } = this.state
+    const { selectedDate } = this.state
 
     return (
       <div className="container">
@@ -175,7 +204,6 @@ class Makeup extends Component {
             {selectedDate && <p>Availability for <b>{selectedDate.format('dddd, MMM Do')}</b></p>}
             {this.setTableJSX()}
           </RowItem>
-          {/* <div /> */}
         </Row>
       </div>
     )
@@ -202,12 +230,17 @@ const mapStateToProps = (state) => {
   }
 }
 
+Makeup.defaultProps = {
+  location: 'Fairfax',
+}
+
 Makeup.propTypes = {
   absences: absencesPropTypes.isRequired,
   fairfax: makeupLocationPropTypes.isRequired,
   chantilly: makeupLocationPropTypes.isRequired,
-  location: PropTypes.string.isRequired,
+  location: PropTypes.string,
   roomsChecked: PropTypes.arrayOf(PropTypes.bool).isRequired,
+  dispatch: PropTypes.func.isRequired,
 }
 
-export default connect(mapStateToProps)(Makeup)
+export default withRouter(connect(mapStateToProps)(Makeup))

@@ -20,6 +20,15 @@
   padding-left: 0.5rem;
 }
 
+.input-group input[type='text']:disabled {
+  border: 0.5px solid #cacccd;
+  background-color: #E8E8E8;
+  height: 3rem;
+  border-radius: 5px;
+  width: 16rem;
+  padding-left: 0.5rem;
+}
+
 .input-group .select {
   border: 1px solid #cacccd;
   height: 3rem;

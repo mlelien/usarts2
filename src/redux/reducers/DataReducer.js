@@ -53,3 +53,11 @@ export const absencesReducer = (state = {}, action) => {
 
   return state
 }
+
+export const makeupSheetsReducer = (state = {}, action) => {
+  if (action.type === 'GET_DATA' && action.spreadsheetID === process.env.MAKEUPS_SHEET) {
+    return action.data
+  }
+
+  return state
+}
