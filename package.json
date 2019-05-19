@@ -2,7 +2,7 @@
   "scripts": {
     "server": "NODE_ENV=production node server.js",
     "dev": "webpack-dev-server",
-    "start": "NODE_ENV=production node server.js",
+    "start": "node server.js",
     "build": "webpack --mode production",
     "lambda-serve": "netlify-lambda serve lambda-src",
     "build-lambda": "NODE_ENV=production webpack && netlify-lambda build lambda-src",
