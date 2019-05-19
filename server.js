@@ -17,12 +17,20 @@ app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
 app.use(logger('dev'))
 
-const jwtClient = new google.auth.JWT(privatekey.client_email,
+// const jwtClient = new google.auth.JWT(privatekey.client_email,
+//   null,
+//   privatekey.private_key, [
+//     'https://www.googleapis.com/auth/spreadsheets',
+//     'https://www.googleapis.com/auth/drive',
+//   ])
+
+const jwtClient = new google.auth.JWT(process.env.CLIENT_EMAIL,
   null,
-  privatekey.private_key, [
+  process.env.CLIENT_EMAIL, [
     'https://www.googleapis.com/auth/spreadsheets',
     'https://www.googleapis.com/auth/drive',
   ])
+
 // authenticate request
 jwtClient.authorize((err) => {
   // at this point the authentication is done you can now use `jwtClient`
@@ -113,7 +121,8 @@ app.post('/api/getList', (req, res) => {
 
   sheets.append({
     auth: jwtClient,
-    spreadsheetId: privatekey.absences_spreadsheet_id,
+    spreadsheetId: process.env.ABSENCES_SHEET,
+    // spreadsheetId: privatekey.absences_spreadsheet_id,
     range: 'A2:H2',
     valueInputOption: 'RAW',
     resource: body,
