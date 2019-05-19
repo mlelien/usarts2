@@ -88,9 +88,6 @@ class Absence extends Component {
           <RowItem>
             <SecondaryButton onClick={this.onAddChildBtnClicked} type='button'>+ add child</SecondaryButton>
           </RowItem>
-          <RowItem>
-            <p>If your children attend class on different days, please fill out separate forms.</p>
-          </RowItem>
         </Row>
         <Row>
           <label className='input-group'>

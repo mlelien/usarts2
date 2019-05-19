@@ -4,16 +4,18 @@ import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import { Radio } from '../css/testtest'
 import { setLocation } from '../redux/actions/AbsenceActions'
+import { setLookupAbsenceLocation } from '../redux/actions/MakeupActions'
 
 class LocationRadio extends Component {
   onChange = (event) => {
     const { dispatch, childIndex } = this.props
-    dispatch(setLocation(event.target.value, childIndex))
+
+    if (childIndex > -1) { dispatch(setLocation(event.target.value, childIndex)) } else { dispatch(setLookupAbsenceLocation(event.target.value)) }
   }
 
   render() {
     const { location } = this.props
-
+    console.log(location)
     return (
       <div className='input-group'>
         <label>
@@ -50,7 +52,9 @@ LocationRadio.propTypes = {
 }
 
 const mapStateToProps = (state, props) => {
-  const { location } = props.childIndex > -1 ? state.absenceChildren[props.childIndex] : state.makeup
+  const location = props.childIndex > -1
+    ? state.absenceChildren[props.childIndex].location
+    : state.makeup.lookupAbsenceLocation
 
   return {
     location,

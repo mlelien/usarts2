@@ -45,8 +45,19 @@ const makeupReducer = (state = {}, action) => {
         studentID: action.studentID,
       }
 
-    default:
-      return state
+    case 'SET_LOOKUP_ABSENCE_LOCATION':
+      return {
+        ...state,
+        lookupAbsenceLocation: action.location,
+      }
+
+    case 'SET_LOOKUP_ABSENCE_DAY':
+      return {
+        ...state,
+        lookupAbsenceDay: action.day,
+      }
+
+    default: return state
   }
 }
 

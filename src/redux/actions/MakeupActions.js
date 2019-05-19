@@ -41,3 +41,13 @@ export const setStudentIDMakeup = studentID => ({
   type: 'SET_STUDENT_ID_MAKEUP',
   studentID,
 })
+
+export const setLookupAbsenceLocation = location => ({
+  type: 'SET_LOOKUP_ABSENCE_LOCATION',
+  location,
+})
+
+export const setLookupAbsenceDay = day => ({
+  type: 'SET_LOOKUP_ABSENCE_DAY',
+  day,
+})

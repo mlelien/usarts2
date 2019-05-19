@@ -14,6 +14,11 @@ export const Radio = styled.input`
   margin-bottom: 1rem;
 `
 
+export const RadioFixed = styled(Radio)`
+  background-color: green;
+  color: green;
+`
+
 export const SecondaryButton = styled.button`
   color: #D12F24;
   background: #D8D8D8;

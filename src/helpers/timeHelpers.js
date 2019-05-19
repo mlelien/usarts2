@@ -1,11 +1,11 @@
-import moment from 'moment'
-
-const playground = () => {
-  const dayOfWeek = moment()
-    .startOf('month')
-    .day(Number(6))
-    .set('hour', 4)
-    .set('minute', 30)
+export const turnToLongDay = (dayNum) => {
+  if (dayNum === 0) return 'Sunday'
+  if (dayNum === 1) return 'Monday'
+  if (dayNum === 2) return 'Tuesday'
+  if (dayNum === 3) return 'Wednesday'
+  if (dayNum === 4) return 'Thursday'
+  if (dayNum === 5) return 'Friday'
+  if (dayNum === 6) return 'Saturday'
 }
 
 export const turnToNormalTime = (timeObj) => {
