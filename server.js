@@ -5,7 +5,7 @@ const cors = require('cors')
 const { google } = require('googleapis')
 const bodyParser = require('body-parser')
 const logger = require('morgan')
-const privatekey = require('./sheets.json')
+// const privatekey = require('./sheets.json')
 
 const port = process.env.PORT || 3000
 const app = express()
