@@ -6,17 +6,17 @@ const entry = {
   index: './src/App.js',
 }
 
-const env = dotenv.config().parsed
+// const env = dotenv.config().parsed
 
 process.env.NODE_ENV = process.env.NODE_ENV || 'development'
 
-const envKeys = Object.keys(env).reduce((prev, next) => {
-  prev[`process.env.${next}`] = JSON.stringify(env[next])
-  return prev
-}, {})
+// const envKeys = Object.keys(env).reduce((prev, next) => {
+//   prev[`process.env.${next}`] = JSON.stringify(env[next])
+//   return prev
+// }, {})
 
 const plugins = [
-  new webpack.DefinePlugin(envKeys),
+  // new webpack.DefinePlugin(envKeys),
 ]
 
 const output = {
