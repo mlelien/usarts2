@@ -27,8 +27,8 @@ const output = {
 
 const devServer = {
   contentBase: path.join(__dirname, 'public'),
-  publicPath: 'http://localhost:9000',
-  port: 9000,
+  publicPath: 'http://localhost:3000',
+  port: 3000,
   compress: true,
   watchContentBase: true,
   historyApiFallback: true,

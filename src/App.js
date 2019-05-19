@@ -34,12 +34,12 @@ const markup = (
   </Provider>
 )
 
-fetch('http://http://localhost:9000/test')
-  .then((res) => { console.log(res) })
+// fetch('http://http://localhost:9000/test')
+//   .then((res) => { console.log(res) })
 
 ReactDOM.render(<p>Loading</p>, document.querySelector('#root'))
 
-// store.dispatch(startGetAllData())
-//   .then(() => {
-//     ReactDOM.render(markup, document.querySelector('#root'))
-//   })
+store.dispatch(startGetAllData())
+  .then(() => {
+    ReactDOM.render(markup, document.querySelector('#root'))
+  })

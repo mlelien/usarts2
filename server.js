@@ -7,7 +7,7 @@ const bodyParser = require('body-parser')
 const logger = require('morgan')
 const privatekey = require('./sheets.json')
 
-const port = process.env.PORT || 9000
+const port = process.env.PORT || 3000
 const app = express()
 app.use(cors())
 
@@ -124,8 +124,8 @@ app.post('/api/getList', (req, res) => {
   })
 })
 
-// app.use(express.static(publicPath))
-app.use('/.netlify/functions/api')
+app.use(express.static(publicPath))
+// app.use('/.netlify/functions/api')
 
 app.get('*', (_, res) => {
   res.sendFile(path.join(publicPath, 'index.html'))
