@@ -10,6 +10,13 @@ const entry = {
 
 process.env.NODE_ENV = process.env.NODE_ENV || 'development'
 
+let privateKey
+if (process.env.NODE_ENV === 'development') {
+  privateKey = process.env.PRIVATE_KEY
+} else {
+  privateKey = process.env.PRIVATE_KEY.replace(/\\n/g, '\n')
+}
+
 // const envKeys = Object.keys(env).reduce((prev, next) => {
 //   prev[`process.env.${next}`] = JSON.stringify(env[next])
 //   return prev
@@ -26,7 +33,7 @@ const plugins = [
     'process.env.ABSENCES_SHEET': JSON.stringify(process.env.ABSENCES_SHEET),
     'process.env.MAKEUPS_SHEET': JSON.stringify(process.env.MAKEUPS_SHEET),
     'process.env.GOOGLE_API': JSON.stringify(process.env.GOOGLE_API),
-    'process.env.PRIVATE_KEY': JSON.stringify(process.env.PRIVATE_KEY.replace(/\\n/g, '\n')),
+    'process.env.PRIVATE_KEY': JSON.stringify(privateKey),
     'process.env.CLIENT_EMAIL': JSON.stringify(process.env.CLIENT_EMAIL),
   }),
   // new webpack.DefinePlugin(envKeys),
