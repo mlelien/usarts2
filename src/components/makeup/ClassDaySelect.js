@@ -37,6 +37,8 @@ class ClassDaySelect extends Component {
 
 const mapStateToProps = state => ({
   location: state.makeup.lookupAbsenceLocation,
+  // fairfaxClassSchedule: [],
+  // chantillyClassSchedule: [],
   fairfaxClassSchedule: getClassSchedule(state.fairfaxClassSchedule),
   chantillyClassSchedule: getClassSchedule(state.chantillyClassSchedule),
 })

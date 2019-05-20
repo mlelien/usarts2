@@ -11,7 +11,7 @@ process.env.NODE_ENV = process.env.NODE_ENV || 'development'
 // const plugins = []
 // console.log(process.env.NODE_ENV)
 // if (process.env.NODE_ENV === 'development') {
-// const env = dotenv.config().parsed
+const env = dotenv.config().parsed
 
 // const envKeys = Object.keys(env).reduce((prev, next) => {
 //   prev[`process.env.${next}`] = JSON.stringify(env[next])

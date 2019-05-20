@@ -39,10 +39,6 @@ jwtClient.authorize((err) => {
   // to read or write to the spreadsheet
   if (err) {
     console.log('error')
-    console.log('process.env:')
-    console.log(process.env)
-    console.log('private key:')
-    console.log(process.env.PRIVATE_KEY)
     console.log(err)
   } else {
     console.log('success')
@@ -66,11 +62,6 @@ app.get('/api/allLastModified', (req, res) => {
 app.get('/api/getFieldData', (req, res) => {
   const sheets = google.sheets('v4').spreadsheets.values
   const drive = google.drive('v3')
-  console.log('in getFieldData')
-  console.log('req.query')
-  console.log(req.query)
-  console.log('private key:')
-  console.log(process.env.PRIVATE_KEY)
   const { spreadsheetId } = req.query
 
   sheets
@@ -110,7 +101,7 @@ app.get('/api/getFieldData', (req, res) => {
           if (!errDrive) {
             const file = responseDrive.data.files.filter(row => row.id === spreadsheetId)
             const { modifiedTime } = file[0]
-            console.log(modifiedTime)
+
             savableForm.unshift({
               modifiedTime,
             })

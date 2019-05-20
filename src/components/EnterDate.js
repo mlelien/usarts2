@@ -51,6 +51,7 @@ class EnterDate extends Component {
         focused={calendarFocused}
         onFocusChange={this.onCalendarFocusChanged}
         numberOfMonths={1}
+        // isOutsideRange={() => false}
         isOutsideRange={calendarDay => this.isOutsideRange(calendarDay)}
       />
     )
@@ -65,8 +66,10 @@ EnterDate.propTypes = {
 const mapStateToProps = (state, props) => ({
   date: state.absenceChildren[props.childIndex].date,
   location: state.absenceChildren[props.childIndex].location,
-  fairfaxClassSchedule: getClassSchedule(state.fairfaxClassSchedule),
   selectedRoom: state.absenceChildren[props.childIndex].room,
+  // fairfaxClassSchedule: [],
+  // chantillyClassSchedule: [],
+  fairfaxClassSchedule: getClassSchedule(state.fairfaxClassSchedule),
   chantillyClassSchedule: getClassSchedule(state.chantillyClassSchedule),
 })
 

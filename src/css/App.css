@@ -3,9 +3,23 @@
 html {
   font-size: 62.5%;
   font-family: 'Roboto', arial, sans-serif;
-  font-color: #151515;
+  color: #151515;
 }
 
-.App {
-  text-align: center;
+.loading-container {
+  height: 90vh;
+  display: flex; 
+  justify-content: center;
+  align-items: center;
+}
+
+.loading {
+  display: inline-block;
+  color: #151515;
+  font-weight: 300;
+}
+
+.vertical-container {
+  display: flex;
+  flex-direction: column;
 }

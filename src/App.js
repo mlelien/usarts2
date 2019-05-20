@@ -34,10 +34,15 @@ const markup = (
   </Provider>
 )
 
-// fetch('http://http://localhost:9000/test')
-//   .then((res) => { console.log(res) })
-
-ReactDOM.render(<p>Loading</p>, document.querySelector('#root'))
+ReactDOM.render(
+  <div className='loading-container'>
+    <div className='vertical-container'>
+      <h1 className='loading'>Loading</h1>
+      <img src='./img/loading.svg' alt='Loading' />
+    </div>
+  </div>,
+  document.querySelector('#root'),
+)
 
 store.dispatch(startGetAllData())
   .then(() => {

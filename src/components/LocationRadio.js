@@ -15,7 +15,7 @@ class LocationRadio extends Component {
 
   render() {
     const { location } = this.props
-    console.log(location)
+
     return (
       <div className='input-group'>
         <label>

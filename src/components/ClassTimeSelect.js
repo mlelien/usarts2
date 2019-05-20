@@ -63,6 +63,8 @@ const mapStateToProps = (state, props) => {
     location: state.absenceChildren[props.childIndex].location,
     selectedTime: state.absenceChildren[props.childIndex].classTime,
     dayOfWeek,
+    // fairfaxClassSchedule: [],
+    // chantillyClassSchedule: [],
     fairfaxClassSchedule: getClassSchedule(state.fairfaxClassSchedule),
     chantillyClassSchedule: getClassSchedule(state.chantillyClassSchedule),
   }
