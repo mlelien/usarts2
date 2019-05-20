@@ -44,6 +44,8 @@ export const backendGetData = spreadsheetId => axios
   })
 
 export const getData = (spreadsheetId) => {
+  console.log('in getData')
+  console.log(`spreadSheetId: ${spreadsheetId}`)
   const savedData = JSON.parse(localStorage.getItem(spreadsheetId))
 
   if (!savedData) {
