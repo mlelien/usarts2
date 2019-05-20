@@ -33,11 +33,13 @@ class EnterDate extends Component {
   isOutsideRange = (calendarDay) => {
     const { location, fairfaxClassSchedule, chantillyClassSchedule } = this.props
 
+    const isInPast = calendarDay.isBefore(moment())
+
     const classOnDay = location === 'Fairfax'
       ? fairfaxClassSchedule[Number(calendarDay.format('d'))].length !== 0
       : chantillyClassSchedule[Number(calendarDay.format('d'))].length !== 0
 
-    return !classOnDay
+    return isInPast || !classOnDay
   }
 
   render() {
