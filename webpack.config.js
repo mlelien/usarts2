@@ -9,33 +9,33 @@ const entry = {
 process.env.NODE_ENV = process.env.NODE_ENV || 'development'
 
 // const plugins = []
-console.log(process.env.NODE_ENV)
+// console.log(process.env.NODE_ENV)
 // if (process.env.NODE_ENV === 'development') {
-const env = dotenv.config().parsed
+// const env = dotenv.config().parsed
 
-const envKeys = Object.keys(env).reduce((prev, next) => {
-  prev[`process.env.${next}`] = JSON.stringify(env[next])
-  return prev
-}, {})
+// const envKeys = Object.keys(env).reduce((prev, next) => {
+//   prev[`process.env.${next}`] = JSON.stringify(env[next])
+//   return prev
+// }, {})
 
 //  plugins.push(new webpack.DefinePlugin({ envKeys }))
 // }
 
 const plugins = [
-// new webpack.DefinePlugin({
-//   'process.env.CLASS_SCHEDULE_FAIRFAX': JSON.stringify(process.env.CLASS_SCHEDULE_FAIRFAX),
-//   'process.env.CLASS_SCHEDULE_CHANTILLY': JSON.stringify(process.env.CLASS_SCHEDULE_CHANTILLY),
-//   'process.env.SCHOOL_PICKUP_FAIRFAX': JSON.stringify(process.env.SCHOOL_PICKUP_FAIRFAX),
-//   'process.env.SCHOOL_PICKUP_CHANTILLY': JSON.stringify(process.env.SCHOOL_PICKUP_CHANTILLY),
-//   'process.env.ROOM_FAIRFAX': JSON.stringify(process.env.ROOM_FAIRFAX),
-//   'process.env.ROOM_CHANTILLY': JSON.stringify(process.env.ROOM_CHANTILLY),
-//   'process.env.ABSENCES_SHEET': JSON.stringify(process.env.ABSENCES_SHEET),
-//   'process.env.MAKEUPS_SHEET': JSON.stringify(process.env.MAKEUPS_SHEET),
-//   'process.env.GOOGLE_API': JSON.stringify(process.env.GOOGLE_API),
-//   'process.env.PRIVATE_KEY': JSON.stringify(privateKey),
-//   'process.env.CLIENT_EMAIL': JSON.stringify(process.env.CLIENT_EMAIL),
-// }),
-  new webpack.DefinePlugin(envKeys),
+  new webpack.DefinePlugin({
+    'process.env.CLASS_SCHEDULE_FAIRFAX': JSON.stringify(process.env.CLASS_SCHEDULE_FAIRFAX),
+    'process.env.CLASS_SCHEDULE_CHANTILLY': JSON.stringify(process.env.CLASS_SCHEDULE_CHANTILLY),
+    'process.env.SCHOOL_PICKUP_FAIRFAX': JSON.stringify(process.env.SCHOOL_PICKUP_FAIRFAX),
+    'process.env.SCHOOL_PICKUP_CHANTILLY': JSON.stringify(process.env.SCHOOL_PICKUP_CHANTILLY),
+    'process.env.ROOM_FAIRFAX': JSON.stringify(process.env.ROOM_FAIRFAX),
+    'process.env.ROOM_CHANTILLY': JSON.stringify(process.env.ROOM_CHANTILLY),
+    'process.env.ABSENCES_SHEET': JSON.stringify(process.env.ABSENCES_SHEET),
+    'process.env.MAKEUPS_SHEET': JSON.stringify(process.env.MAKEUPS_SHEET),
+    'process.env.GOOGLE_API': JSON.stringify(process.env.GOOGLE_API),
+    'process.env.PRIVATE_KEY': JSON.stringify(process.env.PRIVATE_KEY),
+    'process.env.CLIENT_EMAIL': JSON.stringify(process.env.CLIENT_EMAIL),
+  }),
+  // new webpack.DefinePlugin(envKeys),
 ]
 
 const output = {
