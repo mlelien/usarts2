@@ -26,7 +26,7 @@ const plugins = [
     'process.env.ABSENCES_SHEET': JSON.stringify(process.env.ABSENCES_SHEET),
     'process.env.MAKEUPS_SHEET': JSON.stringify(process.env.MAKEUPS_SHEET),
     'process.env.GOOGLE_API': JSON.stringify(process.env.GOOGLE_API),
-    'process.env.PRIVATE_KEY': JSON.stringify(process.env.PRIVATE_KEY),
+    'process.env.PRIVATE_KEY': JSON.stringify(process.env.PRIVATE_KEY.replace(/\\n/g, '\n')),
     'process.env.CLIENT_EMAIL': JSON.stringify(process.env.CLIENT_EMAIL),
   }),
   // new webpack.DefinePlugin(envKeys),
