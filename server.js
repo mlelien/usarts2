@@ -6,6 +6,7 @@ const { google } = require('googleapis')
 const bodyParser = require('body-parser')
 const logger = require('morgan')
 // const privatekey = require('./sheets.json')
+require('dotenv').config()
 
 const port = process.env.PORT || 3000
 const app = express()
@@ -26,7 +27,7 @@ app.use(logger('dev'))
 
 const jwtClient = new google.auth.JWT(process.env.CLIENT_EMAIL,
   null,
-  process.env.PRIVATE_KEY,
+  process.env.PRIVATE_KEY.replace(/\\n/g, '\n'),
   [
     'https://www.googleapis.com/auth/spreadsheets',
     'https://www.googleapis.com/auth/drive',
@@ -38,6 +39,8 @@ jwtClient.authorize((err) => {
   // to read or write to the spreadsheet
   if (err) {
     console.log('error')
+    console.log('process.env:')
+    console.log(process.env)
     console.log('private key:')
     console.log(process.env.PRIVATE_KEY)
     console.log(err)
