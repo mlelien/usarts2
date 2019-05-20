@@ -60,6 +60,9 @@ app.get('/api/allLastModified', (req, res) => {
 app.get('/api/getFieldData', (req, res) => {
   const sheets = google.sheets('v4').spreadsheets.values
   const drive = google.drive('v3')
+  console.log('in getFieldData')
+  console.log('req')
+  console.log(req)
   const { spreadsheetId } = req.query
 
   sheets
