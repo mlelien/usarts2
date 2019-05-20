@@ -9,6 +9,7 @@ const getSpreadsheetData = (spreadsheetID, data) => ({
 
 export const startGetAllData = () => (dispatch) => {
   console.log('in startGetAllData')
+  console.log(`process.env.CLASS_SCHEDULE_FAIRFAX: ${process.env.CLASS_SCHEDULE_FAIRFAX}`)
   return (
     getData(process.env.CLASS_SCHEDULE_FAIRFAX)
       .then((data) => {
