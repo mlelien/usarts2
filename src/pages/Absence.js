@@ -56,9 +56,9 @@ class Absence extends Component {
     const { absenceChildren } = this.props
     const forms = []
     for (let i = 0; i < absenceChildren.length; i++) {
-      const jsx = i === 0 ? (<AbsenceForm key={i} childIndex={i} />)
+      const jsx = i === 0 ? (<AbsenceForm childIndex={i} />)
         : (
-          <div key={i}>
+          <div>
             <AbsenceForm childIndex={i} />
             <SecondaryButton onClick={() => this.removeChildClicked(i)}>Remove Child</SecondaryButton>
           </div>
