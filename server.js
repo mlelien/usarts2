@@ -26,7 +26,7 @@ app.use(logger('dev'))
 
 const jwtClient = new google.auth.JWT(process.env.CLIENT_EMAIL,
   null,
-  process.env.CLIENT_EMAIL, [
+  process.env.PRIVATE_KEY, [
     'https://www.googleapis.com/auth/spreadsheets',
     'https://www.googleapis.com/auth/drive',
   ])
@@ -145,4 +145,4 @@ app.get('*', (_, res) => {
 
 app.listen(port, () => {})
 
-module.exports.handler = serverless(app)
+// module.exports.handler = serverless(app)
