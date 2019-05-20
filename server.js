@@ -65,6 +65,8 @@ app.get('/api/getFieldData', (req, res) => {
   console.log('in getFieldData')
   console.log('req.query')
   console.log(req.query)
+  console.log('private key:')
+  console.log(process.env.PRIVATE_KEY)
   const { spreadsheetId } = req.query
 
   sheets
