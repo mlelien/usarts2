@@ -8,7 +8,7 @@ import { getClassSchedule, getUniqueElem } from '../helpers/makeupHelpers'
 class RoomSelect extends Component {
   roomOptions = () => {
     const {
-      location, fairfaxRooms, chantillyRooms, dayOfWeek, dispatch, childIndex, selectedRoom,
+      location, fairfaxRooms, chantillyRooms, fairfaxRoomsSimplified, chantillyRoomsSimplified, dayOfWeek, dispatch, childIndex, selectedRoom,
     } = this.props
 
     if (dayOfWeek !== -1) {
@@ -22,7 +22,10 @@ class RoomSelect extends Component {
       return rooms.map(room => <option key={room} value={room}>{room}</option>)
     }
 
-    return null
+    const allRooms = fairfaxRoomsSimplified.map(roomObj => roomObj['Room No.'])
+    chantillyRoomsSimplified.forEach(roomObj => allRooms.push(roomObj['Room No.']))
+
+    return getUniqueElem(allRooms).map(room => <option key={room} value={room}>{room}</option>)
   }
 
   onChange = (event) => {
@@ -63,8 +66,8 @@ const mapStateToProps = (state, props) => {
     location: state.absenceChildren[props.childIndex].location,
     dayOfWeek,
     selectedRoom: state.absenceChildren[props.childIndex].room,
-    // fairfaxRooms: [],
-    // chantillyRooms: [],
+    fairfaxRoomsSimplified: state.fairfaxRooms,
+    chantillyRoomsSimplified: state.chantillyRooms,
     fairfaxRooms: getClassSchedule(state.fairfaxClassSchedule),
     chantillyRooms: getClassSchedule(state.chantillyClassSchedule),
   }

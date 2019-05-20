@@ -11,12 +11,12 @@ th {
   font-weight: normal;
 }
 
-button {
+.makeup-btn {
   border-radius: 2px;
   background-color: #F26056;
   margin: 0;
 }
 
-button:hover {
+.makeup-btn:hover {
   opacity: 0.5;
 }

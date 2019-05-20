@@ -2,7 +2,6 @@
 /* eslint-disable react/jsx-closing-tag-location */
 import React from 'react'
 import '../css/styles.css'
-import '../css/Makeup.css'
 
 const Main = () => (
   <div className="container">

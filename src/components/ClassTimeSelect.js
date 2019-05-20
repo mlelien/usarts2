@@ -4,11 +4,12 @@ import { connect } from 'react-redux'
 import { setClassTime } from '../redux/actions/AbsenceActions'
 import { classScheduleModifiedPropTypes } from '../helpers/propTypes'
 import { getClassSchedule, getUniqueElem } from '../helpers/makeupHelpers'
+import { turnToNormalTime } from '../helpers/timeHelpers'
 
 class ClassTimeSelect extends Component {
   timeOptions = () => {
     const {
-      fairfaxClassSchedule, chantillyClassSchedule, location, dayOfWeek, dispatch, childIndex, selectedTime,
+      fairfaxClassSchedule, chantillyClassSchedule, fairfaxSimplified, chantillySimplified, location, dayOfWeek, dispatch, childIndex, selectedTime,
     } = this.props
 
     if (dayOfWeek !== -1) {
@@ -23,7 +24,11 @@ class ClassTimeSelect extends Component {
 
       return normalTimes.map(time => <option key={time} value={time}>{time}</option>)
     }
-    return null
+
+    const allTimes = fairfaxSimplified.map(classObj => turnToNormalTime(classObj))
+    chantillySimplified.forEach(classObj => allTimes.push(turnToNormalTime(classObj)))
+    const allUniqueTimes = getUniqueElem(allTimes).sort((a, b) => new Date(`1970/01/01 ${a}`) - new Date(`1970/01/01 ${b}`))
+    return allUniqueTimes.map(time => <option key={time} value={time}>{time}</option>)
   }
 
   onChange = (event) => {
@@ -65,6 +70,8 @@ const mapStateToProps = (state, props) => {
     dayOfWeek,
     // fairfaxClassSchedule: [],
     // chantillyClassSchedule: [],
+    fairfaxSimplified: state.fairfaxClassSchedule,
+    chantillySimplified: state.chantillyClassSchedule,
     fairfaxClassSchedule: getClassSchedule(state.fairfaxClassSchedule),
     chantillyClassSchedule: getClassSchedule(state.chantillyClassSchedule),
   }

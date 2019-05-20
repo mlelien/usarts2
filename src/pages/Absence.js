@@ -100,9 +100,6 @@ class Absence extends Component {
           </label>
         </Row>
         <button type='submit' onClick={this.onSubmit}>Submit Absence</button>
-
-        <p><a href="/absence-pending">pending</a></p>
-        <p><a href='/absence-confirmation'>confirmation</a></p>
       </div>
     )
   }

@@ -161,7 +161,7 @@ class Makeup extends Component {
       jsx.push(
         <td key={i}>
           <Link to={location} onClick={this.onBtnClick}>
-            <button type='button'>{btn.text}</button>
+            <button className='makeup-btn' type='button'>{btn.text}</button>
           </Link>
         </td>,
       )
