@@ -20,6 +20,7 @@ import 'react-dates/lib/css/_datepicker.css'
 import '../css/Calendar.css'
 import '../css/Makeup.css'
 import { setMakeupDate } from '../redux/actions/MakeupActions'
+import { MakeupContainer, Space } from '../css/testtest'
 
 const Row = styled.div`
   display: flex;
@@ -184,7 +185,7 @@ class Makeup extends Component {
     const { selectedDate } = this.state
 
     return (
-      <div className="container">
+      <div className='container'>
         <div className="title">Mark an Absence</div>
         <p>Please fill out an absence form before submitting a makeup request.</p>
         <Row>
@@ -200,6 +201,7 @@ class Makeup extends Component {
           </RowItem>
           <RowItem>
             <LocationRadio />
+            <Space />
             <RoomCheckbox />
             {selectedDate && <p>Availability for <b>{selectedDate.format('dddd, MMM Do')}</b></p>}
             {this.setTableJSX()}

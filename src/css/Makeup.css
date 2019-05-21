@@ -20,3 +20,7 @@ th {
 .makeup-btn:hover {
   opacity: 0.5;
 }
+
+.SingleDatePicker_picker {
+  margin-bottom: 3rem;
+}

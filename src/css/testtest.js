@@ -29,3 +29,14 @@ export const SecondaryButton = styled.button`
   font-size: 1.4rem;
   margin: 0;
 `
+export const MakeupContainer = styled.div`
+  max-width: 90rem;
+  margin: 0 auto;
+  margin-bottom: 2rem;
+  padding: 3rem 0;
+  font-size: 1.5rem;
+`
+
+export const Space = styled.div`
+  margin-bottom: 2rem;
+`
