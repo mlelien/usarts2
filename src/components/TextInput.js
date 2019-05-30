@@ -46,12 +46,13 @@ TextInput.defaultProps = {
   value: '',
   disabled: false,
   childIndex: -1,
+  action: () => {},
 }
 
 TextInput.propTypes = {
   dispatch: PropTypes.func.isRequired,
   label: PropTypes.string.isRequired,
-  action: PropTypes.func.isRequired,
+  action: PropTypes.func,
   value: PropTypes.string,
   childIndex: PropTypes.number,
   disabled: PropTypes.bool,

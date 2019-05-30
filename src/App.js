@@ -14,6 +14,8 @@ import Makeup from './pages/Makeup'
 import { startGetAllData } from './redux/actions/DataActions'
 import Main from './pages/Main'
 import MakeupContinued from './pages/MakeupContinued'
+import MakeupConf from './components/makeup/MakeupConf'
+import { clearMakeup } from './redux/actions/MakeupActions'
 
 const markup = (
   <Provider store={store}>
@@ -28,6 +30,7 @@ const markup = (
           <Route exact path='/absence-pending' render={() => <AbsencePending />} />
           <Route exact path='/makeup' render={() => <Makeup />} />
           <Route exact path='/makeup-continued' render={() => <MakeupContinued />} />
+          <Route exact path='/makeup-conf' onLeave={() => { console.log('onleave'); store.dispatch(clearMakeup()) }} render={() => <MakeupConf />} />
         </Switch>
       </div>
     </BrowserRouter>

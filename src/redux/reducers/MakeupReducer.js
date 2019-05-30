@@ -45,6 +45,12 @@ const makeupReducer = (state = {}, action) => {
         studentID: action.studentID,
       }
 
+    case 'SET_ROOM_MAKEUP':
+      return {
+        ...state,
+        room: action.room,
+      }
+
     case 'SET_LOOKUP_ABSENCE_LOCATION':
       return {
         ...state,
@@ -55,6 +61,23 @@ const makeupReducer = (state = {}, action) => {
       return {
         ...state,
         lookupAbsenceDay: action.day,
+      }
+
+    case 'SET_LOOKUP_ABSENCE_TIME':
+      return {
+        ...state,
+        lookupAbsenceTime: action.time,
+      }
+
+    case 'SET_LOOKUP_ABSENCE_ROOM':
+      return {
+        ...state,
+        lookupAbsenceRoom: action.room,
+      }
+
+    case 'CLEAR_MAKEUP':
+      return {
+        roomsCheckboxes: state.roomsCheckboxes,
       }
 
     default: return state

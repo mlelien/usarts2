@@ -18,13 +18,6 @@ app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
 app.use(logger('dev'))
 
-// const jwtClient = new google.auth.JWT(privatekey.client_email,
-//   null,
-//   privatekey.private_key, [
-//     'https://www.googleapis.com/auth/spreadsheets',
-//     'https://www.googleapis.com/auth/drive',
-//   ])
-
 const jwtClient = new google.auth.JWT(process.env.CLIENT_EMAIL,
   null,
   process.env.PRIVATE_KEY.replace(/\\n/g, '\n'),
@@ -68,7 +61,7 @@ app.get('/api/getFieldData', (req, res) => {
     .get({
       auth: jwtClient,
       spreadsheetId,
-      range: 'A:C',
+      range: 'A:Z',
     })
     .then((response) => {
       const sheetsData = response.data.values
@@ -112,19 +105,18 @@ app.get('/api/getFieldData', (req, res) => {
     })
 })
 
-app.post('/api/getList', (req, res) => {
-  const { childrenDateFormatted } = req.body
+app.post('/api/postToSheets', (req, res) => {
+  const { passedInData, spreadsheetId } = req.body
   const sheets = google.sheets('v4').spreadsheets.values
 
-  const values = childrenDateFormatted.map(child => Object.values(child))
+  const values = passedInData.map(dataObj => Object.values(dataObj))
   const body = {
     values,
   }
 
   sheets.append({
     auth: jwtClient,
-    spreadsheetId: process.env.ABSENCES_SHEET,
-    // spreadsheetId: privatekey.absences_spreadsheet_id,
+    spreadsheetId,
     range: 'A2:H2',
     valueInputOption: 'RAW',
     resource: body,

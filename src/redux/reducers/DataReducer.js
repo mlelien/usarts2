@@ -1,3 +1,5 @@
+import { getClassSchedule } from '../../helpers/makeupHelpers'
+
 export const fairfaxClassScheduleReducer = (state = {}, action) => {
   if (action.type === 'GET_DATA' && action.spreadsheetID === process.env.CLASS_SCHEDULE_FAIRFAX) {
     return action.data
@@ -9,6 +11,22 @@ export const fairfaxClassScheduleReducer = (state = {}, action) => {
 export const chantillyClassScheduleReducer = (state = {}, action) => {
   if (action.type === 'GET_DATA' && action.spreadsheetID === process.env.CLASS_SCHEDULE_CHANTILLY) {
     return action.data
+  }
+
+  return state
+}
+
+export const fairfaxClassScheduleModifiedReducer = (state = {}, action) => {
+  if (action.type === 'GET_DATA_MODIFIED' && action.spreadsheetID === process.env.CLASS_SCHEDULE_FAIRFAX) {
+    return getClassSchedule(action.data)
+  }
+
+  return state
+}
+
+export const chantillyClassScheduleModifiedReducer = (state = {}, action) => {
+  if (action.type === 'GET_DATA_MODIFIED' && action.spreadsheetID === process.env.CLASS_SCHEDULE_CHANTILLY) {
+    return getClassSchedule(action.data)
   }
 
   return state
@@ -51,12 +69,25 @@ export const absencesReducer = (state = {}, action) => {
     return action.data
   }
 
+  if (action.type === 'ADD_ABSENCE') {
+    const newState = [...state, action.child]
+    return newState
+  }
+
   return state
 }
 
 export const makeupSheetsReducer = (state = {}, action) => {
   if (action.type === 'GET_DATA' && action.spreadsheetID === process.env.MAKEUPS_SHEET) {
     return action.data
+  }
+
+  if (action.type === 'ADD_MAKEUP') {
+    const newState = [...state]
+    newState.push(action.makeup)
+    return {
+      ...newState,
+    }
   }
 
   return state

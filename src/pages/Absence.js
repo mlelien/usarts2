@@ -24,7 +24,7 @@ const RowItem = styled.div`
 class Absence extends Component {
   onSubmit = (event) => {
     event.preventDefault()
-    const { history, absenceChildren } = this.props
+    const { history, absenceChildren, dispatch } = this.props
     let isFilled = true
 
     absenceChildren.forEach((absenceObj) => {
@@ -33,10 +33,14 @@ class Absence extends Component {
       } = absenceObj
 
       if (date === null || location === '' || firstName === ''
-          || lastName === '' || room === '' || classTime === '') { isFilled = false }
+          || lastName === '' || room === '' || classTime === '') {
+        isFilled = false
+      }
     })
 
-    if (isFilled) history.push('/absence-pending')
+    if (isFilled) {
+      history.push('/absence-pending')
+    }
   }
 
   onAddChildBtnClicked = () => {
@@ -56,9 +60,9 @@ class Absence extends Component {
     const { absenceChildren } = this.props
     const forms = []
     for (let i = 0; i < absenceChildren.length; i++) {
-      const jsx = i === 0 ? (<AbsenceForm childIndex={i} />)
+      const jsx = i === 0 ? (<AbsenceForm key={i} childIndex={i} />)
         : (
-          <div>
+          <div key={i}>
             <AbsenceForm childIndex={i} />
             <SecondaryButton onClick={() => this.removeChildClicked(i)}>Remove Child</SecondaryButton>
           </div>

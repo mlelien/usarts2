@@ -3,11 +3,15 @@ import React from 'react'
 import { withRouter } from 'react-router-dom'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
+import moment from 'moment'
 import { Row, RowItem } from '../css/testtest'
 import TextInput from '../components/TextInput'
 import LocationRadio from '../components/LocationRadio'
 import { setFirstNameMakeup, setLastNameMakeup, setStudentIDMakeup } from '../redux/actions/MakeupActions'
 import ClassDaySelect from '../components/makeup/ClassDaySelect'
+import ClassTimeSelect from '../components/ClassTimeSelect'
+import RoomSelect from '../components/RoomSelect'
+import ShowAbsences from '../components/makeup/ShowAbsences'
 
 
 const MakeupContinued = (props) => {
@@ -64,8 +68,17 @@ const MakeupContinued = (props) => {
           </label>
         </RowItem>
         <RowItem>
-          <ClassDaySelect />
+          <ClassDaySelect fromMakeupPage />
         </RowItem>
+        <RowItem>
+          <ClassTimeSelect />
+        </RowItem>
+        <RowItem>
+          <RoomSelect />
+        </RowItem>
+      </Row>
+      <Row>
+        <ShowAbsences makeupDate={date} makeupTime={time} />
       </Row>
     </section>
   )

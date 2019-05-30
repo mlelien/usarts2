@@ -13,7 +13,6 @@ export const startSetDefault = location => (dispatch, getState) => {
   const state = getState()
   const roomsLength = location === 'Fairfax' ? state.fairfaxRooms.length : state.chantillyRooms.length
   const arr = Array(roomsLength).fill(true)
-
   dispatch(setDefault(arr))
 }
 
@@ -42,6 +41,11 @@ export const setStudentIDMakeup = studentID => ({
   studentID,
 })
 
+export const setRoomMakeup = room => ({
+  type: 'SET_ROOM_MAKEUP',
+  room,
+})
+
 export const setLookupAbsenceLocation = location => ({
   type: 'SET_LOOKUP_ABSENCE_LOCATION',
   location,
@@ -50,4 +54,18 @@ export const setLookupAbsenceLocation = location => ({
 export const setLookupAbsenceDay = day => ({
   type: 'SET_LOOKUP_ABSENCE_DAY',
   day,
+})
+
+export const setLookupAbsenceTime = time => ({
+  type: 'SET_LOOKUP_ABSENCE_TIME',
+  time,
+})
+
+export const setLookupAbsenceRoom = room => ({
+  type: 'SET_LOOKUP_ABSENCE_ROOM',
+  room,
+})
+
+export const clearMakeup = () => ({
+  type: 'CLEAR_MAKEUP',
 })

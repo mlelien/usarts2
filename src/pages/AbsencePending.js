@@ -3,8 +3,10 @@ import '../css/styles.css'
 import '../css/AbsencePending.css'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
+import PropTypes from 'prop-types'
 import AbsencePendingDisplay from '../components/AbsencePendingDisplay'
 import { absenceChildrenPropTypes, historyPropType } from '../helpers/propTypes'
+import { addChild } from '../redux/actions/AbsenceActions'
 
 class AbsencePending extends Component {
   onEditBtnClicked = (event) => {
@@ -40,13 +42,15 @@ class AbsencePending extends Component {
   }
 }
 
-const mapStateToProps = state => ({
-  children: state.absenceChildren,
-})
-
 AbsencePending.propTypes = {
   history: historyPropType.isRequired,
   children: absenceChildrenPropTypes.isRequired,
+  dispatch: PropTypes.func.isRequired,
 }
+
+
+const mapStateToProps = state => ({
+  children: state.absenceChildren,
+})
 
 export default withRouter(connect(mapStateToProps)(AbsencePending))

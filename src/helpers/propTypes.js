@@ -29,6 +29,21 @@ export const absencesPropTypes = PropTypes.arrayOf(
   ),
 )
 
+export const roomsPropTypes = PropTypes.arrayOf(
+  PropTypes.shape({
+    'Room No.': PropTypes.string.isRequired,
+    Max: PropTypes.string.isRequired,
+  }),
+)
+
+export const classSchedulePropTypes = PropTypes.arrayOf(
+  PropTypes.shape({
+    'Room No': PropTypes.string.isRequired,
+    'Seq No': PropTypes.string.isRequired,
+    AMPM: PropTypes.string.isRequired,
+  }),
+)
+
 export const classScheduleModifiedPropTypes = PropTypes.arrayOf(
   PropTypes.arrayOf(
     PropTypes.shape({

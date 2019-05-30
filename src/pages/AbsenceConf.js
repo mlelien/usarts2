@@ -4,14 +4,27 @@ import '../css/styles.css'
 import axios from 'axios'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
+import moment from 'moment'
 import { clearAbsences } from '../redux/actions/AbsenceActions'
 import { absenceChildrenPropTypes } from '../helpers/propTypes'
+import { startGetAbsences, addAbsence } from '../redux/actions/DataActions'
 
 class AbsenceConf extends Component {
   componentDidMount() {
-    const { children, dispatch } = this.props
+    const { children, dispatch, absences } = this.props
 
     const childrenDateFormatted = children.map((child) => {
+      dispatch(addAbsence({
+        'Absence Date': moment(child.date).format('l'),
+        'Location': child.location, //eslint-disable-line
+        'Last Name': child.lastName,
+        'First Name': child.firstName,
+        'Student ID': child.studentID,
+        'Room #': child.room,
+        'Class Time': child.classTime,
+        'School Pickup': child.schoolPickup,
+      }))
+
       const date = child.date.format('l')
       return {
         ...child,
@@ -20,8 +33,9 @@ class AbsenceConf extends Component {
     })
 
     axios
-      .post('/api/getList', {
-        childrenDateFormatted,
+      .post('/api/postToSheets', {
+        passedInData: childrenDateFormatted,
+        spreadsheetId: process.env.ABSENCES_SHEET,
       })
       .then(() => {
         dispatch(clearAbsences())
@@ -49,6 +63,7 @@ AbsenceConf.propTypes = {
 
 const mapStateToProps = state => ({
   children: state.absenceChildren,
+  absences: state.absences,
 })
 
 export default connect(mapStateToProps)(AbsenceConf)

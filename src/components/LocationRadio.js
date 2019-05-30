@@ -5,12 +5,98 @@ import PropTypes from 'prop-types'
 import { Radio } from '../css/testtest'
 import { setLocation } from '../redux/actions/AbsenceActions'
 import { setLookupAbsenceLocation } from '../redux/actions/MakeupActions'
+import { weekDayToNumber } from '../helpers/timeHelpers'
+import { classScheduleModifiedPropTypes } from '../helpers/propTypes'
 
 class LocationRadio extends Component {
-  onChange = (event) => {
-    const { dispatch, childIndex } = this.props
+  roomCheck = (classSchedule, weekDayNum) => {
+    const { room } = this.props
 
-    if (childIndex > -1) { dispatch(setLocation(event.target.value, childIndex)) } else { dispatch(setLookupAbsenceLocation(event.target.value)) }
+    if (weekDayNum) {
+      const classObjArr = classSchedule[weekDayNum]
+      const result = classObjArr.filter(classObj => classObj.roomNumber === room)
+
+      return result.length > 0
+    }
+
+    let goodToGo = false
+    for (let i = 0; i < 7; i++) {
+      goodToGo = goodToGo || classSchedule[i].filter(classObj => classObj.roomNumber === room).length > 0
+    }
+    return goodToGo
+  }
+
+  timeCheck = (classSchedule, weekDayNum) => {
+    const { time } = this.props
+
+    if (weekDayNum) {
+      const classObjArr = classSchedule[weekDayNum]
+      const result = classObjArr.filter(classObj => classObj.time === time)
+      return result.length > 0
+    }
+
+    let goodToGo = false
+    for (let i = 0; i < 7; i++) {
+      goodToGo = goodToGo || classSchedule[i].filter(classObj => classObj.time === time).length > 0
+    }
+    return goodToGo
+  }
+
+  checkTimeAndRoom = (classSchedule, weekDayNum) => {
+    const { room, time } = this.props
+
+    if (weekDayNum) {
+      const classObjArr = classSchedule[weekDayNum]
+      const result = classObjArr.filter(classObj => classObj.time === time && classObj.roomNumber === room)
+      return result.length > 0
+    }
+
+    let goodToGo = false
+    for (let i = 0; i < 7; i++) {
+      goodToGo = goodToGo || classSchedule[i].filter(classObj => classObj.time === time && classObj.roomNumber === room)
+    }
+    return goodToGo
+  }
+
+  onChange = (event) => {
+    const {
+      dispatch, childIndex, day, time, room, fairfaxClassSchedule, chantillyClassSchedule,
+    } = this.props
+    const { value } = event.target
+
+    if (childIndex > -1) {
+      dispatch(setLocation(value, childIndex))
+    } else {
+      let goodToGo
+      const weekDayNum = weekDayToNumber(day)
+      const classSchedule = value === 'Fairfax' ? fairfaxClassSchedule : chantillyClassSchedule
+
+      // no day, no time, no room
+      if (!day && !time && !room) goodToGo = true
+
+      // no day, yes time, yes room
+      else if (!day && time && room) goodToGo = this.checkTimeAndRoom(classSchedule, weekDayNum)
+
+      // no day, yes time, no room
+      else if (!day && time && !room) goodToGo = this.timeCheck(classSchedule, weekDayNum)
+
+      // no day, no time, yes room
+      else if (!day && !time && room) goodToGo = this.roomCheck(classSchedule, weekDayNum)
+
+      // yes day, no time, no room
+      else if (day && !time && !room) goodToGo = classSchedule[weekDayNum].length > 0
+
+      // yes day, yes time, no room
+      else if (day && time && !room) goodToGo = this.timeCheck(classSchedule, weekDayNum)
+
+      // yes day, no time, yes room
+      else if (day && !time && room) goodToGo = this.roomCheck(classSchedule, weekDayNum)
+
+      // yes day, yes time, yes room
+      else if (day && time && room) goodToGo = this.checkTimeAndRoom(classSchedule, weekDayNum)
+
+      if (goodToGo) { dispatch(setLookupAbsenceLocation(value)) }
+    }
   }
 
   render() {
@@ -43,21 +129,37 @@ class LocationRadio extends Component {
 
 LocationRadio.defaultProps = {
   childIndex: -1,
+  location: '',
+  day: null,
+  time: null,
+  room: null,
 }
 
 LocationRadio.propTypes = {
   dispatch: PropTypes.func.isRequired,
   childIndex: PropTypes.number,
-  location: PropTypes.string.isRequired,
+  location: PropTypes.string,
+  day: PropTypes.string,
+  time: PropTypes.string,
+  room: PropTypes.string,
+  fairfaxClassSchedule: classScheduleModifiedPropTypes.isRequired,
+  chantillyClassSchedule: classScheduleModifiedPropTypes.isRequired,
 }
 
 const mapStateToProps = (state, props) => {
-  const location = props.childIndex > -1
-    ? state.absenceChildren[props.childIndex].location
-    : state.makeup.lookupAbsenceLocation
+  if (props.childIndex > -1) {
+    return {
+      location: state.absenceChildren[props.childIndex].location,
+    }
+  }
 
   return {
-    location,
+    location: state.makeup.lookupAbsenceLocation,
+    fairfaxClassSchedule: state.fairfaxClassScheduleModified,
+    chantillyClassSchedule: state.chantillyClassScheduleModified,
+    day: state.makeup.lookupAbsenceDay,
+    time: state.makeup.lookupAbsenceTime,
+    room: state.makeup.lookupAbsenceRoom,
   }
 }
 

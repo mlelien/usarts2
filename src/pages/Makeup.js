@@ -19,7 +19,7 @@ import 'react-dates/initialize'
 import 'react-dates/lib/css/_datepicker.css'
 import '../css/Calendar.css'
 import '../css/Makeup.css'
-import { setMakeupDate } from '../redux/actions/MakeupActions'
+import { setMakeupDate, setRoomMakeup } from '../redux/actions/MakeupActions'
 import { MakeupContainer, Space } from '../css/testtest'
 
 const Row = styled.div`
@@ -42,18 +42,26 @@ class Makeup extends Component {
   }
 
   getAvailabilityCount = (roomObj, selectedDate) => {
-    const { fairfax, absences } = this.props
+    const { fairfax, absences, makeupSheets } = this.props
     const { roomNumber } = roomObj
     const [month, day] = selectedDate.format('l').split('/')
 
     const max = fairfax.rooms[roomNumber]
-    let absenceCount = 0
 
+    let absenceCount = 0
     if (absences[month] && absences[month][day]) {
       absenceCount = absences[month][day]
     }
 
-    return max - absenceCount
+    let makeupCount = 0
+    makeupSheets.forEach((makeup) => {
+      const makeupDate = makeup['Makeup Date']
+      const [makeupMonth, makeupDay] = makeupDate.split('/')
+
+      if (makeupMonth === month && makeupDay === day) makeupCount += 1
+    })
+
+    return max - absenceCount - makeupCount
   }
 
   setTableJSX = () => {
@@ -139,10 +147,11 @@ class Makeup extends Component {
     return isInPast || !classOnDay
   }
 
-  onBtnClick = () => {
+  onBtnClick = (roomNumber) => {
     const { selectedDate } = this.state
     const { dispatch } = this.props
 
+    dispatch(setRoomMakeup(roomNumber))
     dispatch(setMakeupDate(selectedDate.format('l')))
   }
 
@@ -161,7 +170,7 @@ class Makeup extends Component {
 
       jsx.push(
         <td key={i}>
-          <Link to={location} onClick={this.onBtnClick}>
+          <Link to={location} onClick={() => this.onBtnClick(btn.roomNumber)}>
             <button className='makeup-btn' type='button'>{btn.text}</button>
           </Link>
         </td>,
@@ -227,6 +236,7 @@ const mapStateToProps = (state) => {
       rooms: getRooms(chantillyRooms),
     },
     absences: getAbsences(absences),
+    makeupSheets: state.makeupSheets,
     location: makeup.location,
     roomsChecked: makeup.roomsCheckboxes,
   }

@@ -69,10 +69,8 @@ const mapStateToProps = (state, props) => ({
   date: state.absenceChildren[props.childIndex].date,
   location: state.absenceChildren[props.childIndex].location,
   selectedRoom: state.absenceChildren[props.childIndex].room,
-  // fairfaxClassSchedule: [],
-  // chantillyClassSchedule: [],
-  fairfaxClassSchedule: getClassSchedule(state.fairfaxClassSchedule),
-  chantillyClassSchedule: getClassSchedule(state.chantillyClassSchedule),
+  fairfaxClassSchedule: state.fairfaxClassScheduleModified,
+  chantillyClassSchedule: state.chantillyClassScheduleModified,
 })
 
 export default connect(mapStateToProps)(EnterDate)
