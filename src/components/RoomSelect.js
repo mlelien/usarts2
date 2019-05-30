@@ -35,8 +35,8 @@ class RoomSelect extends Component {
 
   absenceJSX = () => {
     const { dayOfWeek } = this.props
-
-    if (dayOfWeek !== -1) return this.roomOnDayJSX()
+    console.log(`dayOfWeek: ${dayOfWeek}`)
+    if (dayOfWeek) return this.roomOnDayJSX()
     return this.allRoomsJSX()
   }
 
@@ -126,7 +126,6 @@ class RoomSelect extends Component {
 
 RoomSelect.defaultProps = {
   childIndex: -1,
-  dayOfWeek: -1,
   location: null,
   dayOfWeek: null,
   time: null,
@@ -151,12 +150,12 @@ const mapStateToProps = (state, props) => {
 
     return {
       location: state.absenceChildren[childIndex].location,
-      dayOfWeek: date ? date.day() : -1,
+      dayOfWeek: date ? date.day() : null,
       selectedRoom: state.absenceChildren[childIndex].room,
       fairfaxRooms: state.fairfaxRooms,
       chantillyRooms: state.chantillyRooms,
       fairfaxClassSchedule: state.fairfaxClassScheduleModified,
-      chantillyClassSchedule: state.chantillyClassSchedule,
+      chantillyClassSchedule: state.chantillyClassScheduleModified,
     }
   }
 
