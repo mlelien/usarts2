@@ -24,13 +24,14 @@ p {
 }
 
 button {
+  width: auto;
+  height: auto;
   color: white;
   background: #D12F24;
   border: none;
   margin-right: 5rem;
   margin-top: 3rem;
   border-radius: 5px;
-  height: 3.5rem;
   width: 12rem;
   font-size: 1.4rem;
 }
