@@ -92,3 +92,19 @@ export const makeupSheetsReducer = (state = {}, action) => {
 
   return state
 }
+
+export const studentsChantillyReducer = (state = {}, action) => {
+  if (action.type === 'GET_DATA' && action.spreadsheetID === process.env.STUDENTS_CHANTILLY) {
+    return action.data
+  }
+
+  return state
+}
+
+export const studentsFairfaxReducer = (state = {}, action) => {
+  if (action.type === 'GET_DATA' && action.spreadsheetID === process.env.STUDENTS_FAIRFAX) {
+    return action.data
+  }
+
+  return state
+}

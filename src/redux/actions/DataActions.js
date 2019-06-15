@@ -67,6 +67,15 @@ export const startGetAllData = () => dispatch => Promise.all([
       dispatch(getSpreadsheetData(process.env.MAKEUPS_SHEET, data))
     }),
 
+  getData(process.env.STUDENTS_FAIRFAX)
+    .then((data) => {
+      dispatch(getSpreadsheetData(process.env.STUDENTS_FAIRFAX, data))
+    }),
+
+  getData(process.env.STUDENTS_CHANTILLY)
+    .then((data) => {
+      dispatch(getSpreadsheetData(process.env.STUDENTS_CHANTILLY, data))
+    }),
 ])
 
 export default startGetAllData

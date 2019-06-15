@@ -5,7 +5,7 @@ import {
 import thunk from 'redux-thunk'
 import absenceChildrenReducer from './reducers/AbsenceReducer'
 import {
-  fairfaxClassScheduleReducer, chantillyClassScheduleReducer, chantillySchoolReducer, fairfaxSchoolReducer, chantillyRoomReducer, fairfaxRoomReducer, absencesReducer, makeupSheetsReducer, chantillyClassScheduleModifiedReducer, fairfaxClassScheduleModifiedReducer,
+  fairfaxClassScheduleReducer, chantillyClassScheduleReducer, chantillySchoolReducer, fairfaxSchoolReducer, chantillyRoomReducer, fairfaxRoomReducer, absencesReducer, makeupSheetsReducer, chantillyClassScheduleModifiedReducer, fairfaxClassScheduleModifiedReducer, studentsFairfaxReducer, studentsChantillyReducer,
 } from './reducers/DataReducer'
 import makeupReducer from './reducers/MakeupReducer'
 
@@ -25,6 +25,8 @@ const store = createStore(
     chantillySchools: chantillySchoolReducer,
     fairfaxRooms: fairfaxRoomReducer,
     chantillyRooms: chantillyRoomReducer,
+    fairfaxStudents: studentsFairfaxReducer,
+    chantillyStudents: studentsChantillyReducer,
   }),
   composeEnhancers(applyMiddleware(thunk)),
 )

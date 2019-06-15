@@ -34,6 +34,8 @@ const plugins = [
     'process.env.GOOGLE_API': JSON.stringify(process.env.GOOGLE_API),
     'process.env.PRIVATE_KEY': JSON.stringify(process.env.PRIVATE_KEY),
     'process.env.CLIENT_EMAIL': JSON.stringify(process.env.CLIENT_EMAIL),
+    'process.env.STUDENTS_FAIRFAX': JSON.stringify(process.env.STUDENTS_FAIRFAX),
+    'process.env.STUDENTS_CHANTILLY': JSON.stringify(process.env.STUDENTS_CHANTILLY),
   }),
   // new webpack.DefinePlugin(envKeys),
 ]

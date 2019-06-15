@@ -138,13 +138,14 @@ class Makeup extends Component {
 
   isOutsideRange = (calendarDay) => {
     // TODO: four month cut off
+    const isToday = calendarDay.isSame(moment(), 'day')
     const isInPast = calendarDay.isBefore(moment())
     const { fairfax, chantilly, location } = this.props
     const classOnDay = location === 'Fairfax'
       ? fairfax.classSchedule[Number(calendarDay.format('d'))].length !== 0
       : chantilly.classSchedule[Number(calendarDay.format('d'))].length !== 0
 
-    return isInPast || !classOnDay
+    return isToday || isInPast || !classOnDay
   }
 
   onBtnClick = (roomNumber) => {

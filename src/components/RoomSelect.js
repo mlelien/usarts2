@@ -35,7 +35,7 @@ class RoomSelect extends Component {
 
   absenceJSX = () => {
     const { dayOfWeek } = this.props
-    console.log(`dayOfWeek: ${dayOfWeek}`)
+
     if (dayOfWeek) return this.roomOnDayJSX()
     return this.allRoomsJSX()
   }
