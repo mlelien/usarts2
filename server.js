@@ -40,7 +40,7 @@ jwtClient.authorize((err) => {
 
 const transporter = nodemailer.createTransport({
   service: 'gmail',
-  secure: false, 
+  secure: false,
   port: 465,
   tls: {
     rejectUnauthorized: false,
@@ -120,26 +120,26 @@ app.get('/api/getFieldData', (req, res) => {
 })
 
 app.post('/api/postToSheets', (req, res) => {
-  // const { passedInData, spreadsheetId } = req.body
+  const { passedInData, spreadsheetId } = req.body
 
-  // const sheets = google.sheets('v4').spreadsheets.values
-  // const values = passedInData.map(dataObj => Object.values(dataObj))
+  const sheets = google.sheets('v4').spreadsheets.values
+  const values = passedInData.map(dataObj => Object.values(dataObj))
 
-  // const body = {
-  //   values,
-  // }
+  const body = {
+    values,
+  }
 
-  // sheets.append({
-  //   auth: jwtClient,
-  //   spreadsheetId,
-  //   range: 'A2:H2',
-  //   valueInputOption: 'RAW',
-  //   resource: body,
-  // }, (err) => {
-  //   if (!err) {
-  //     res.send('done')
-  //   }
-  // })
+  sheets.append({
+    auth: jwtClient,
+    spreadsheetId,
+    range: 'A2:H2',
+    valueInputOption: 'RAW',
+    resource: body,
+  }, (err) => {
+    if (!err) {
+      res.send('done')
+    }
+  })
 })
 
 app.post('/api/sendConfirmation', (req, res) => {
