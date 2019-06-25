@@ -68,8 +68,7 @@ app.get('/api/allLastModified', (req, res) => {
 app.get('/api/getFieldData', (req, res) => {
   const sheets = google.sheets('v4').spreadsheets.values
   const drive = google.drive('v3')
-  console.log('req.query');
-  console.log(req.query);
+
   const { spreadsheetId } = req.query
 
   sheets
@@ -145,7 +144,8 @@ app.post('/api/postToSheets', (req, res) => {
 
 app.post('/api/sendConfirmation', (req, res) => {
   const { parentEmail, subject, text } = req.body
-
+console.log('sendConfirmation');
+console.log(req.body);
   const mailOptions = {
     from: process.env.GMAIL,
     to: parentEmail,
