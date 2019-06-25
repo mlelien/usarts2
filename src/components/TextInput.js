@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import '../css/Absence.css'
 import PropTypes from 'prop-types'
 
 class TextInput extends Component {
@@ -24,20 +23,18 @@ class TextInput extends Component {
   }
 
   render() {
-    const { label, disabled } = this.props
+    const { label, disabled, id } = this.props
     const { value } = this.state
 
     return (
-      <label className='input-group'>
-        <span>{label}</span>
-        <input
-          className='input'
-          type='text'
-          value={value}
-          onChange={this.onChange}
-          disabled={disabled}
-        />
-      </label>
+      <input
+        type="text"
+        className='form-control'
+        id={id}
+        value={value}
+        onChange={this.onChange}
+        disabled={disabled}
+      />
     )
   }
 }

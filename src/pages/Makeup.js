@@ -1,7 +1,6 @@
 /* eslint-disable react/jsx-one-expression-per-line */
 import React, { Component } from 'react'
 import moment from 'moment'
-import styled from 'styled-components'
 import { SingleDatePicker } from 'react-dates'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
@@ -13,24 +12,11 @@ import {
 } from '../helpers/makeupHelpers'
 import { absencesPropTypes, makeupLocationPropTypes, historyPropType } from '../helpers/propTypes'
 
-
 import 'react-big-calendar/lib/css/react-big-calendar.css'
 import 'react-dates/initialize'
 import 'react-dates/lib/css/_datepicker.css'
-import '../css/Calendar.css'
-import '../css/Makeup.css'
+import '../styles/css/Calendar.css'
 import { setMakeupDate, setRoomMakeup } from '../redux/actions/MakeupActions'
-import { MakeupContainer, Space } from '../css/testtest'
-
-const Row = styled.div`
-  display: flex;
-  justify-content: flex-start;
-  margin-bottom: 3rem;
-`
-
-const RowItem = styled.div`
-  margin-right: 5rem;
-`
 
 class Makeup extends Component {
   constructor(props) {
@@ -42,11 +28,12 @@ class Makeup extends Component {
   }
 
   getAvailabilityCount = (roomObj, selectedDate) => {
-    const { fairfax, absences, makeupSheets } = this.props
-    const { roomNumber } = roomObj
+    const { fairfax, chantilly, location, absences, makeupSheets } = this.props
+    const { roomNumber, studentCount } = roomObj
     const [month, day] = selectedDate.format('l').split('/')
 
-    const max = fairfax.rooms[roomNumber]
+    const schedule = location === 'Fairfax' ? fairfax : chantilly
+    const max = schedule.rooms[roomNumber]
 
     let absenceCount = 0
     if (absences[month] && absences[month][day]) {
@@ -54,14 +41,17 @@ class Makeup extends Component {
     }
 
     let makeupCount = 0
+    console.log('makeupSheets');
+    console.log(makeupSheets);
     makeupSheets.forEach((makeup) => {
+      console.log(makeup);
       const makeupDate = makeup['Makeup Date']
       const [makeupMonth, makeupDay] = makeupDate.split('/')
 
       if (makeupMonth === month && makeupDay === day) makeupCount += 1
     })
 
-    return max - absenceCount - makeupCount
+    return max - studentCount - absenceCount - makeupCount
   }
 
   setTableJSX = () => {
@@ -71,10 +61,10 @@ class Makeup extends Component {
       const { roomsJSX, tableDataJSX } = this.setTableData(selectedDate)
 
       return (
-        <table>
+        <table className='table'>
           <thead>
             <tr>
-              <th />
+              <th scope='col' />
               {roomsJSX}
             </tr>
           </thead>
@@ -104,7 +94,7 @@ class Makeup extends Component {
     })
 
     times = getUniqueElem(times)
-    const roomsJSX = getUniqueElem(showRooms).map(room => <th key={room}>{room}</th>)
+    const roomsJSX = getUniqueElem(showRooms).map(room => <th key={room} scope='col'>{room}</th>)
     const tableDataJSX = this.showTimesAndButtons(times, availabilityBtns)
 
     return {
@@ -122,11 +112,15 @@ class Makeup extends Component {
 
   setAvailabilityBtn = (roomObj, selectedDate, time, roomNumber) => {
     const availability = this.getAvailabilityCount(roomObj, selectedDate)
+    let text
+    if (availability > 1) text = `${availability} spots`
+    else if (availability > 0) text = `${availability} spot`
+    else text = 'Full'
 
     return {
       time,
       roomNumber,
-      text: `${availability} spot${availability > 1 && 's'}`,
+      text,
     }
   }
 
@@ -172,7 +166,12 @@ class Makeup extends Component {
       jsx.push(
         <td key={i}>
           <Link to={location} onClick={() => this.onBtnClick(btn.roomNumber)}>
-            <button className='makeup-btn' type='button'>{btn.text}</button>
+            {btn.text === 'Full' ?  (
+              <button className='btn-info disabled' disabled type='button'>{btn.text}</button>
+            ) : (
+              <button className='btn-info' type='button'>{btn.text}</button>
+            )}
+           
           </Link>
         </td>,
       )
@@ -196,27 +195,28 @@ class Makeup extends Component {
 
     return (
       <div className='container'>
-        <div className="title">Mark an Absence</div>
+        <h3 className='mb-3'>Schedule a Makeup</h3>
         <p>Please fill out an absence form before submitting a makeup request.</p>
-        <Row>
-          <RowItem>
-            <SingleDatePicker
-              date={selectedDate}
-              onDateChange={this.onDateChange}
-              focused
-              onFocusChange={() => true}
-              numberOfMonths={1}
-              isOutsideRange={calendarDay => this.isOutsideRange(calendarDay)}
-            />
-          </RowItem>
-          <RowItem>
+        <div className='row'>
+          <div className='col-lg-4'>
+            <div className="calendar-size">
+              <SingleDatePicker
+                date={selectedDate}
+                onDateChange={this.onDateChange}
+                focused
+                onFocusChange={() => true}
+                numberOfMonths={1}
+                isOutsideRange={calendarDay => this.isOutsideRange(calendarDay)}
+              />
+            </div>
+          </div>
+          <div className='col-lg'>
             <LocationRadio />
-            <Space />
             <RoomCheckbox />
-            {selectedDate && <p>Availability for <b>{selectedDate.format('dddd, MMM Do')}</b></p>}
+            {selectedDate && <p className='mt-5'>Availability for <b>{selectedDate.format('dddd, MMM Do')}</b></p>}
             {this.setTableJSX()}
-          </RowItem>
-        </Row>
+          </div>
+        </div>
       </div>
     )
   }

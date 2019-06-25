@@ -1,3 +1,4 @@
+import 'bootstrap'
 import React from 'react'
 import ReactDOM from 'react-dom'
 import { BrowserRouter, Switch, Route } from 'react-router-dom'
@@ -5,7 +6,8 @@ import { Provider } from 'react-redux'
 import store from './redux/configureStore'
 
 import Header from './header/Header'
-import './css/App.css'
+import './styles/styles.scss'
+import './styles/css/Calendar.css'
 import Navbar from './header/Navbar'
 import Absence from './pages/Absence'
 import AbsenceConf from './pages/AbsenceConf'
@@ -38,11 +40,9 @@ const markup = (
 )
 
 ReactDOM.render(
-  <div className='loading-container'>
-    <div className='vertical-container'>
-      <h1 className='loading'>Loading</h1>
-      <img src='./img/loading.svg' alt='Loading' />
-    </div>
+  <div className="vh-100 d-flex flex-column justify-content-center align-items-center">
+    <h1 className='loading'>Loading</h1>
+    <img src='./img/loading.svg' alt='Loading' />
   </div>,
   document.querySelector('#root'),
 )

@@ -1,8 +1,6 @@
 import React, { Component } from 'react'
-import '../css/Absence.css'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
-import { Radio } from '../css/testtest'
 import { setLocation } from '../redux/actions/AbsenceActions'
 import { setLookupAbsenceLocation } from '../redux/actions/MakeupActions'
 import { weekDayToNumber } from '../helpers/timeHelpers'
@@ -100,28 +98,20 @@ class LocationRadio extends Component {
   }
 
   render() {
-    const { location } = this.props
-
     return (
-      <div className='input-group'>
-        <label>
-          <Radio
-            type='radio'
-            value='Fairfax'
-            checked={location === 'Fairfax'}
-            onChange={this.onChange}
-          />
-          <span>Fairfax</span>
-        </label>
-        <label>
-          <Radio
-            type='radio'
-            value='Chantilly'
-            checked={location === 'Chantilly'}
-            onChange={this.onChange}
-          />
-          <span>Chantilly</span>
-        </label>
+      <div>
+        <div className='form-check'>
+          <input type="radio" className="form-check-input" name='locationRadio' id='Fairfax' value='Fairfax' onChange={this.onChange} />
+          <label htmlFor="Fairfax" className='form-check-label'>
+            Fairfax
+          </label>
+        </div>
+        <div className="form-check">
+          <input type="radio" className="form-check-input" name='locationRadio' id='Chantilly' value='Chantilly' onChange={this.onChange} />
+          <label htmlFor="Chantilly" className='form-check-label'>
+            Chantilly
+          </label>
+        </div>
       </div>
     )
   }

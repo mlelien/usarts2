@@ -1,6 +1,4 @@
 import React, { Component } from 'react'
-import '../css/styles.css'
-import '../css/AbsencePending.css'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import PropTypes from 'prop-types'
@@ -32,10 +30,10 @@ class AbsencePending extends Component {
   render() {
     return (
       <div className="container">
-        <div className="title">Absence Pending</div>
+        <h3 className='text-muted mb-4'>Mark an Absence</h3>
         <p> Please review the following absence information: </p>
         {this.showAbsencePendingPerChild()}
-        <button type='button' onClick={this.onEditBtnClicked}>Edit</button>
+        <button type='button' className='mr-3 secondary-button' onClick={this.onEditBtnClicked}>Edit</button>
         <button type='submit' onClick={this.onCofirmBtnClicked}>Confirm</button>
       </div>
     )

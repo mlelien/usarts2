@@ -1,10 +1,10 @@
 const path = require('path')
 const express = require('express')
-const serverless = require('serverless-http')
 const cors = require('cors')
 const { google } = require('googleapis')
 const bodyParser = require('body-parser')
 const logger = require('morgan')
+const nodemailer = require('nodemailer')
 // const privatekey = require('./sheets.json')
 require('dotenv').config()
 
@@ -36,6 +36,19 @@ jwtClient.authorize((err) => {
   } else {
     console.log('success')
   }
+})
+
+const transporter = nodemailer.createTransport({
+  service: 'gmail',
+  secure: false, 
+  port: 25,
+  tls: {
+    rejectUnauthorized: false
+  },
+  auth: {
+    user: process.env.GMAIL,
+    pass: process.env.GMAIL_PASSWORD,
+  },
 })
 
 app.get('/api/allLastModified', (req, res) => {
@@ -107,9 +120,10 @@ app.get('/api/getFieldData', (req, res) => {
 
 app.post('/api/postToSheets', (req, res) => {
   const { passedInData, spreadsheetId } = req.body
-  const sheets = google.sheets('v4').spreadsheets.values
 
+  const sheets = google.sheets('v4').spreadsheets.values
   const values = passedInData.map(dataObj => Object.values(dataObj))
+
   const body = {
     values,
   }
@@ -123,6 +137,25 @@ app.post('/api/postToSheets', (req, res) => {
   }, (err) => {
     if (!err) {
       res.send('done')
+    }
+  })
+})
+
+app.post('/api/sendConfirmation', (req, res) => {
+  const { parentEmail, subject, text } = req.body
+
+  const mailOptions = {
+    from: process.env.GMAIL,
+    to: parentEmail,
+    subject,
+    text,
+  }
+
+  transporter.sendMail(mailOptions, (error, info) => {
+    if (error) {
+      console.log(error);
+    } else {
+      console.log('Email sent: ' + info.response);
     }
   })
 })

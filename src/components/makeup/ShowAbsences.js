@@ -3,7 +3,6 @@ import { connect } from 'react-redux'
 import moment from 'moment'
 import { Link, withRouter } from 'react-router-dom'
 import { weekDayToNumber } from '../../helpers/timeHelpers'
-import '../../css/ShowAbsences.css'
 import axios from 'axios'
 
 
@@ -50,18 +49,20 @@ class ShowAbsences extends Component {
   noAbsenceJSX = () => (
     <div>
       <p>Sorry! It looks like there aren't any absences under that name. Please fill out an absence form first.</p>
+      <button type='button' className='my-4 mr-3' onClick={this.onShowAbsenceClick}>Recheck</button>
       <Link to='/absence'>
         <button type='button'>Absence Form</button>
       </Link>
     </div>
   )
 
-  onSubmitMakeup = () => {
+  onSubmitMakeup = (event) => {
+    event.preventDefault()
     const { makeupDate, makeupTime, history } = this.props
     const { matches, selectedIndex } = this.state
     const makeup = matches[selectedIndex]
-
-    const passedInData = [{
+console.log(this.props);
+    const passedInData = {
       makeupDate,
       makeupTime,
       firstName: makeup['First Name'],
@@ -70,8 +71,12 @@ class ShowAbsences extends Component {
       absenceLocation: makeup['Location'], //eslint-disable-line
       absenceTime: makeup['Class Time'],
       absenceRoom: makeup['Room #'],
-    }]
+    }
 
+    history.push({
+      pathname: '/makeup-conf',
+      makeup: passedInData,
+    })
     // axios
     //   .post('/api/postToSheets', {
     //     passedInData,
@@ -83,7 +88,8 @@ class ShowAbsences extends Component {
   }
 
   hasAbsenceJSX = () => {
-    const { makeupDate, makeupTime, history } = this.props
+    console.log('hasAbsenceJSX');
+    const { makeupDate, makeupTime } = this.props
     const { matches, selectedIndex } = this.state
     const selectedMakeup = matches[selectedIndex]
 
@@ -100,12 +106,14 @@ class ShowAbsences extends Component {
 
     return (
       <div>
-        <p>Select the absence you want to make up for</p>
-        <table>
-          <tr>
-            <th className='show-absence-th'>Absence Date</th>
-            <th className='show-absence-th'>Makeup</th>
-          </tr>
+        <p className='mt-5 text-primary'><b>Select the absence you want to make up for</b></p>
+        <table className='table col-3'>
+          <thead className="thead-light">
+            <tr>
+              <th scope='col'>Absence Date</th>
+              <th scope='col'>Makeup</th>
+            </tr>
+          </thead>
           {matches.map((absence, i) => (
             <tr>
               <td className='show-absence-td'>
@@ -122,15 +130,7 @@ class ShowAbsences extends Component {
             </tr>
           ))}
         </table>
-        <Link to={{
-          pathname: '/makeup-conf',
-          state: {
-            makeup,
-          },
-        }}
-        >
-          <button type='submit' onClick={this.onSubmitMakeup}>Schedule Makeup</button>
-        </Link>
+        <button type='submit' className='mb-5' onClick={this.onSubmitMakeup}>Schedule Makeup</button>
       </div>
     )
   }
@@ -141,12 +141,11 @@ class ShowAbsences extends Component {
       makeupClicked, hasAbsence, matches, selectedIndex,
     } = this.state
 
-
     return (
       makeupClicked ? (
         hasAbsence ? this.hasAbsenceJSX() : this.noAbsenceJSX()
       ) : (
-        <button type='button' onClick={this.onShowAbsenceClick}>Show absences</button>
+        <button type='button' className='my-4' onClick={this.onShowAbsenceClick}>Show absences</button>
       )
 
     )
@@ -163,4 +162,4 @@ const mapStateToProps = state => ({
   room: state.makeup.lookupAbsenceRoom,
 })
 
-export default connect(mapStateToProps)(ShowAbsences)
+export default withRouter(connect(mapStateToProps)(ShowAbsences))

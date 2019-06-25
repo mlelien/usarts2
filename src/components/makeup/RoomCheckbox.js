@@ -2,7 +2,6 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { roomCheckboxToggle } from '../../redux/actions/MakeupActions'
-import '../../css/Checkbox.css'
 
 class RoomCheckbox extends Component {
   onChange = (event) => {
@@ -21,18 +20,21 @@ class RoomCheckbox extends Component {
       const roomNumber = roomObj['Room No.']
 
       const checkboxJSX = (
-        <li key={roomNumber}>
-          <label className='checkbox-label'>
-            <input
-              type='checkbox'
-              name={roomNumber}
-              key={roomNumber}
-              onChange={this.onChange}
-              checked={checkboxes[roomNumber - 1]}
-            />
+        <div className="col-1">
+          <input
+            className='form-check-input'
+            id={roomNumber}
+            type='checkbox'
+            name={roomNumber}
+            key={roomNumber}
+            onChange={this.onChange}
+            checked={checkboxes[roomNumber - 1]}
+          />
+          <label htmlFor={roomNumber} className="form-check-label">
             {roomNumber}
           </label>
-        </li>
+        </div>
+
       )
 
       return checkboxJSX
@@ -43,12 +45,14 @@ class RoomCheckbox extends Component {
 
   render() {
     return (
-      <label className='input-group'>
-        <span>Room #(s):</span>
-        <ul>
-          {this.roomCheckboxes()}
-        </ul>
-      </label>
+      <div>
+        <label><b>Room #</b></label>
+        <div className="form-check">
+          <div className="row">
+            {this.roomCheckboxes()}
+          </div>
+        </div>
+      </div>
     )
   }
 }

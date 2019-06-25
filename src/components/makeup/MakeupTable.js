@@ -28,10 +28,10 @@ class MakeupTable extends Component {
   render() {
     const { showRooms } = this.state
     return (
-      <table>
+      <table className='table'>
         <thead>
           <tr>
-            <th />
+            <th scope='col' />
             {showRooms}
           </tr>
         </thead>

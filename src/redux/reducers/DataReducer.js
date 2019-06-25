@@ -85,9 +85,8 @@ export const makeupSheetsReducer = (state = {}, action) => {
   if (action.type === 'ADD_MAKEUP') {
     const newState = [...state]
     newState.push(action.makeup)
-    return {
-      ...newState,
-    }
+    
+    return newState
   }
 
   return state

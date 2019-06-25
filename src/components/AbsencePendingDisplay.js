@@ -1,6 +1,4 @@
 import React from 'react'
-import '../css/styles.css'
-import '../css/AbsencePending.css'
 import PropTypes from 'prop-types'
 import moment from 'moment'
 
@@ -12,35 +10,35 @@ const AbsencePendingDisplay = (props) => {
 
   return (
     <div>
-      <div className='row-1'>
-        <p className='prompt'>Absence Date</p>
-        <p className='answer'>{date.format('dddd, MMM DD')}</p>
+      <div className='row'>
+        <p className='col-md-3'>Absence Date</p>
+        <p className='col-md-3 font-weight-bold'>{date.format('dddd, MMM DD')}</p>
       </div>
-      <div className='row-1'>
-        <p className='prompt'>Location</p>
-        <p className='answer'>{location}</p>
+      <div className='row'>
+        <p className='col-md-3'>Location</p>
+        <p className='col-md-3 font-weight-bold'>{location}</p>
       </div>
-      <div className='row-2'>
-        <p className='prompt'>First Name</p>
-        <p className='answer'>{firstName}</p>
-        <p className='prompt'>Class Time</p>
-        <p className='answer'>{classTime}</p>
+      <div className='row'>
+        <p className='col-md-3'>First Name</p>
+        <p className='col-md-3 font-weight-bold'>{firstName}</p>
+        <p className='col-md-3'>Class Time</p>
+        <p className='col-md-3 font-weight-bold'>{classTime}</p>
       </div>
-      <div className='row-2'>
-        <p className='prompt'>Last Name</p>
-        <p className='answer'>{lastName}</p>
-        <p className='prompt'>Room #</p>
-        <p className='answer'>{room}</p>
+      <div className='row'>
+        <p className='col-md-3'>Last Name</p>
+        <p className='col-md-3 font-weight-bold'>{lastName}</p>
+        <p className='col-md-3'>Room #</p>
+        <p className='col-md-3 font-weight-bold'>{room}</p>
       </div>
-      <div className='row-2'>
-        <p className='prompt'>Student ID (optional)</p>
-        <p className='answer'>{studentID}</p>
-        <p className='prompt'>School pickup (optional)</p>
-        <p className='answer'>{schoolPickup}</p>
+      <div className='row'>
+        <p className='col-md-3'>Student ID (optional)</p>
+        <p className='col-md-3 font-weight-bold'>{studentID}</p>
+        <p className='col-md-3'>School pickup (optional)</p>
+        <p className='col-md-3 font-weight-bold'>{schoolPickup}</p>
       </div>
-      <div className='row-1'>
-        <p className='prompt'>Repeated Absence (optional)</p>
-        <p className='answer'>{repeatedAbsences}</p>
+      <div className='row'>
+        <p className='col-md-3'>Repeated Absence (optional)</p>
+        <p className='col-md-3 font-weight-bold'>{repeatedAbsences}</p>
       </div>
     </div>
   )

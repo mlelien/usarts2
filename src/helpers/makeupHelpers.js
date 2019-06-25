@@ -42,6 +42,7 @@ export const getClassSchedule = (scheduleData) => {
     daysOfWeek[dayNum].push({
       roomNumber: schedObj['Room No'],
       time,
+      studentCount: schedObj['Students'],
     })
   })
   return daysOfWeek

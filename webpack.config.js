@@ -36,6 +36,8 @@ const plugins = [
     'process.env.CLIENT_EMAIL': JSON.stringify(process.env.CLIENT_EMAIL),
     'process.env.STUDENTS_FAIRFAX': JSON.stringify(process.env.STUDENTS_FAIRFAX),
     'process.env.STUDENTS_CHANTILLY': JSON.stringify(process.env.STUDENTS_CHANTILLY),
+    'process.env.GMAIL': JSON.stringify(process.env.GMAIL),
+    'process.env.GMAIL_PASSWORD': JSON.stringify(process.env.GMAIL_PASSWORD),
   }),
   // new webpack.DefinePlugin(envKeys),
 ]
@@ -65,7 +67,11 @@ const babelLoader = {
 
 const styleLoader = {
   test: /.s?css$/,
-  use: ['style-loader', 'css-loader'],
+  use: [
+    'style-loader',
+    'css-loader',
+    'sass-loader',
+  ]
 }
 
 const imageLoader = {

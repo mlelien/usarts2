@@ -1,8 +1,6 @@
 import React, { Component } from 'react'
-import '../../css/Absence.css'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
-import { Radio } from '../../css/testtest'
 import { setMakeupLocation } from '../../redux/actions/MakeupActions'
 
 class LocationRadio extends Component {
@@ -28,26 +26,36 @@ class LocationRadio extends Component {
     const { location } = this.state
 
     return (
-      <div className='input-group'>
-        <span>Location:</span>
-        <label>
-          <Radio
-            type='radio'
+      <div className='form-group'>
+        <label className='text-primary' htmlFor=""><b>Location</b></label>
+        <div className='form-check'>
+          <input
+            type="radio"
+            className="form-check-input"
+            name='locationRadios'
+            id='FairfaxMakeup'
             value='Fairfax'
             checked={location === 'Fairfax'}
             onChange={this.onChange}
           />
-          <span>Fairfax</span>
-        </label>
-        <label>
-          <Radio
-            type='radio'
+          <label htmlFor="FairfaxMakeup" className="form-check-label">
+            Fairfax
+          </label>
+        </div>
+        <div className='form-check'>
+          <input
+            type="radio"
+            className="form-check-input"
+            name='locationRadios'
+            id='ChantillyMakeup'
             value='Chantilly'
             checked={location === 'Chantilly'}
             onChange={this.onChange}
           />
-          <span>Chantilly</span>
-        </label>
+          <label htmlFor="ChantillyMakeup" className="form-check-label">
+            Chantilly
+          </label>
+        </div>
       </div>
     )
   }

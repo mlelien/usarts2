@@ -10,9 +10,6 @@ import { setFirstName, setLastName, setStudentID } from '../redux/actions/Absenc
 import RoomSelect from './RoomSelect'
 import ClassTimeSelect from './ClassTimeSelect'
 import SchoolPickupSelect from './SchoolPickupSelect'
-import { Row, RowItem } from '../css/testtest'
-import '../css/Absence.css'
-import '../css/styles.css'
 import { childPropType } from '../helpers/propTypes'
 
 const AbsenceForm = (props) => {
@@ -24,57 +21,64 @@ const AbsenceForm = (props) => {
 
   return (
     <form>
-      <Row>
-        <label className='input-group'>
-          <span>Location</span>
-          <LocationRadio childIndex={childIndex} />
-        </label>
-      </Row>
-      <Row>
-        <RowItem>
-          <label className='input-group'>
-            <span>Absence Date</span>
-            <EnterDate childIndex={childIndex} />
-          </label>
-        </RowItem>
-      </Row>
-      <Row>
-        <RowItem>
+      <div className='form-group'>
+        <label>Location</label>
+        <LocationRadio childIndex={childIndex} />
+      </div>
+      <div className='form-group'>
+        <label htmlFor='date'>Absence Date</label>
+        <br />
+        <EnterDate childIndex={childIndex} />
+      </div>
+      <div className='form-row'>
+        <div className='form-group col-md-3'>
+          <label htmlFor="firstName">First Name</label>
           <TextInput
             label='First Name'
+            id='firstName'
             action={setFirstName}
             childIndex={childIndex}
             value={firstName}
           />
-        </RowItem>
-        <RowItem>
+        </div>
+        <div className='form-group col-md-3'>
+          <label htmlFor="lastName">Last Name</label>
           <TextInput
             label='Last Name'
+            id='lastName'
             action={setLastName}
             childIndex={childIndex}
             value={lastName}
           />
-        </RowItem>
-        <RowItem>
+        </div>
+        <div className='form-group col-md-3'>
+          <label htmlFor="studentID">Student ID (optional)</label>
           <TextInput
+            id='studentID'
             label='Student ID (optional)'
             action={setStudentID}
             childIndex={childIndex}
             value={studentID}
           />
-        </RowItem>
-      </Row>
-      <Row>
-        <RowItem>
+        </div>
+      </div>
+      <div className='form-row'>
+        <div className='form-group col-md-3'>
+          <label htmlFor="room">Room #</label>
           <RoomSelect childIndex={childIndex} value={room} />
-        </RowItem>
-        <RowItem>
+        </div>
+        <div className='form-group col-md-3'>
+          <label htmlFor="classTime">Class Time</label>
           <ClassTimeSelect childIndex={childIndex} value={classTime} />
-        </RowItem>
-        <RowItem>
+        </div>
+      </div>
+      <div className="form-row">
+        <div className='form-group col-md-3'>
+          <label className='mb-0' htmlFor="schoolpickup">School pickup (optional)</label>
+          <small className='form-text text-muted mb-1'>If your child usually gets picked up from school, please select the school here:</small>
           <SchoolPickupSelect childIndex={childIndex} value={schoolPickup} />
-        </RowItem>
-      </Row>
+        </div>
+      </div>
     </form>
   )
 }

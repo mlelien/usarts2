@@ -88,8 +88,7 @@ class ClassDaySelect extends Component {
   render() {
     return (
       <label className='input-group'>
-        <span>Original Class Day</span>
-        <select className='select' onChange={this.onChange}>
+        <select id='classDay' className='form-control' onChange={this.onChange}>
           {this.showOptions()}
         </select>
       </label>

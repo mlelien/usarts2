@@ -114,12 +114,9 @@ class RoomSelect extends Component {
     const { selectedRoom } = this.props
 
     return (
-      <label className='input-group'>
-        <span>Room #</span>
-        <select className='select' value={selectedRoom} onChange={this.onChange}>
-          {this.roomOptions()}
-        </select>
-      </label>
+      <select className="form-control" id='roomSelect' value={selectedRoom} onChange={this.onChange}>
+        {this.roomOptions()}
+      </select>
     )
   }
 }

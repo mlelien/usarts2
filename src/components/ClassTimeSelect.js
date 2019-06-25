@@ -121,12 +121,9 @@ class ClassTimeSelect extends Component {
     const { selectedTime } = this.props
 
     return (
-      <label className='input-group'>
-        <span>Class Time</span>
-        <select className='select' value={selectedTime} onChange={this.onChange}>
-          {this.timeOptions()}
-        </select>
-      </label>
+      <select id='classTime' className='form-control' value={selectedTime} onChange={this.onChange}>
+        {this.timeOptions()}
+      </select>
     )
   }
 }

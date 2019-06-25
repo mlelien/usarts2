@@ -34,14 +34,10 @@ class SchoolPickupSelect extends Component {
     const { value } = this.state
 
     return (
-      <label className='input-group'>
-        <span>School pickup (optional)</span>
-        <span className='subtitle'>If your child usually gets picked up from school, please select the school here:</span>
-        <select className='select' value={value} onChange={this.onChange}>
-          <option>None</option>
-          {this.schoolPickupOptions()}
-        </select>
-      </label>
+      <select className='form-control' value={value} onChange={this.onChange}>
+        <option>None</option>
+        {this.schoolPickupOptions()}
+      </select>
     )
   }
 }

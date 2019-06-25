@@ -1,6 +1,6 @@
 const absenceDefaultState = [{
   date: null,
-  location: 'Fairfax',
+  location: '',
   lastName: '',
   firstName: '',
   studentID: '',

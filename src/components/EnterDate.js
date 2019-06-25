@@ -6,7 +6,6 @@ import { SingleDatePicker } from 'react-dates'
 import moment from 'moment'
 import PropTypes from 'prop-types'
 import { setDate } from '../redux/actions/AbsenceActions'
-import '../css/Calendar.css'
 import { getClassSchedule } from '../helpers/makeupHelpers'
 
 class EnterDate extends Component {

@@ -1,30 +1,15 @@
 import React, { Component } from 'react'
-import '../css/Absence.css'
-import '../css/styles.css'
 import PropTypes from 'prop-types'
-import styled from 'styled-components'
 import { withRouter } from 'react-router-dom'
 import { connect } from 'react-redux'
 import AbsenceForm from '../components/AbsenceForm'
 import { setRepeatedAbsences, addChild, removeChild } from '../redux/actions/AbsenceActions'
-import { SecondaryButton } from '../css/testtest'
 import { absenceChildrenPropTypes, historyPropType } from '../helpers/propTypes'
-
-const Row = styled.div`
-  display: flex;
-  align-items: center;
-  margin-bottom: 3rem;
-`
-
-const RowItem = styled.div`
-  margin-right: 4rem;
-  align-items: center;
-`
 
 class Absence extends Component {
   onSubmit = (event) => {
     event.preventDefault()
-    const { history, absenceChildren, dispatch } = this.props
+    const { history, absenceChildren } = this.props
     let isFilled = true
 
     absenceChildren.forEach((absenceObj) => {
@@ -64,7 +49,7 @@ class Absence extends Component {
         : (
           <div key={i}>
             <AbsenceForm childIndex={i} />
-            <SecondaryButton onClick={() => this.removeChildClicked(i)}>Remove Child</SecondaryButton>
+            <button className='secondary-button' type='button' onClick={() => this.removeChildClicked(i)}>Remove Child</button>
           </div>
         )
 
@@ -85,24 +70,26 @@ class Absence extends Component {
     // TODO: forgot text at the end about making up absences
 
     return (
-      <div className="container">
-        <div className="title">Mark an Absence</div>
+      <div className="container mb-4">
+        <h3 className='mb-3'>Mark an Absence</h3>
         {this.showAbsenceForm()}
-        <Row>
-          <RowItem>
-            <SecondaryButton onClick={this.onAddChildBtnClicked} type='button'>+ add child</SecondaryButton>
-          </RowItem>
-        </Row>
-        <Row>
-          <label className='input-group'>
-            <span>Repeated Absences (optional)</span>
+        <div className='row my-4'>
+          <div className='col'>
+            <button className='secondary-button' onClick={this.onAddChildBtnClicked} type='button'>+ add child</button>
+          </div>
+        </div>
+        <div className='row'>
+          <div className='form-group col mb-5'>
+            <label htmlFor="repeatedAbsences" className='mb-0'>Repeated Absences (optional)</label>
+            <small className="form-text text-muted mb-1">If this will be a repeated absence, please let us know the number of classes following <u>not</u> inclduing the date selected above.</small>
             <input
-              className='input'
+              id='repeatedAbsences'
+              className='form-control col-md-1'
               type='text'
               onChange={this.onRepeatedAbsencesChange}
             />
-          </label>
-        </Row>
+          </div>
+        </div>
         <button type='submit' onClick={this.onSubmit}>Submit Absence</button>
       </div>
     )
