@@ -38,6 +38,9 @@ const plugins = [
     'process.env.STUDENTS_CHANTILLY': JSON.stringify(process.env.STUDENTS_CHANTILLY),
     'process.env.GMAIL': JSON.stringify(process.env.GMAIL),
     'process.env.GMAIL_PASSWORD': JSON.stringify(process.env.GMAIL_PASSWORD),
+    'process.env.SENDGRID_API_KEY': JSON.stringify(process.env.SENDGRID_API_KEY),
+    'process.env.MAILGUN_DOMAIN': JSON.stringify(process.env.MAILGUN_DOMAIN),
+    'process.env.MAILGUN_API_KEY': JSON.stringify(process.env.MAILGUN_API_KEY),
   }),
   // new webpack.DefinePlugin(envKeys),
 ]

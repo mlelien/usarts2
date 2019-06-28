@@ -5,6 +5,10 @@ const { google } = require('googleapis')
 const bodyParser = require('body-parser')
 const logger = require('morgan')
 const nodemailer = require('nodemailer')
+const sgMail = require('@sendgrid/mail')
+const Mailgun = require('mailgun-js')
+
+sgMail.setApiKey(process.env.SENDGRID_API_KEY)
 // const privatekey = require('./sheets.json')
 require('dotenv').config()
 
@@ -144,8 +148,32 @@ app.post('/api/postToSheets', (req, res) => {
 
 app.post('/api/sendConfirmation', (req, res) => {
   const { parentEmail, subject, text } = req.body
-console.log('sendConfirmation');
-console.log(req.body);
+
+  // const mailgun = new Mailgun({
+  //   apiKey: process.env.MAILGUN_API_KEY,
+  //   domain: process.env.MAILGUN_DOMAIN,
+  // })
+
+  // const msg = {
+  //   to: parentEmail,
+  //   from: process.env.GMAIL,
+  //   subject,
+  //   text,
+  // }
+
+  // mailgun.messages().send(msg, (err, body) => {
+  //   // If there is an error, render the error page
+  //   if (err) {
+  //     console.log('got an error: ', err)
+  //   }
+  //   // Else we can greet    and leave
+  //   else {
+  //     // Here "submitted.jade" is the view file for this landing page
+  //     // We pass the variable "email" from the url parameter in an object rendered by Jade
+  //     console.log('sent email')
+  //   }
+  // })
+
   const mailOptions = {
     from: process.env.GMAIL,
     to: parentEmail,
@@ -155,9 +183,9 @@ console.log(req.body);
 
   transporter.sendMail(mailOptions, (error, info) => {
     if (error) {
-      console.log(error);
+      console.log(error)
     } else {
-      console.log('Email sent: ' + info.response);
+      console.log(`Email sent: ${  info.response}`)
     }
   })
 })
