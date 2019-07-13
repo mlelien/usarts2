@@ -10,7 +10,16 @@ import { addAbsence } from '../redux/actions/DataActions'
 import { turnToNormalTime } from '../helpers/timeHelpers'
 
 class AbsenceConf extends Component {
+  constructor(props) {
+    super(props)
+
+    this.state = {
+      foundStudent: -1,
+    }
+  }
+
   componentDidMount() {
+    console.log('componentdidmount')
     const {
       children, dispatch, fairfaxStudents, chantillyStudents, history,
     } = this.props
@@ -54,12 +63,27 @@ class AbsenceConf extends Component {
         passedInData: childrenDateFormatted,
         spreadsheetId: process.env.ABSENCES_SHEET,
       })
+    console.log(student)
+    if (student) {
+      this.setState({ foundStudent: 1 })
 
-    axios.post('/api/sendConfirmation', {
-      parentEmail: student.Email,
-      subject: 'Absence Confirmation',
-      text: 'Thanks for scheduling an absence!',
-    })
+      axios.post('/api/sendConfirmation', {
+        parentEmail: student.Email,
+        subject: 'Absence Confirmation',
+        text: 'Thanks for scheduling an absence!',
+      })
+    } else {
+      this.setState({ foundStudent: 0 })
+      let text = ''
+      children.forEach((child) => {
+        text = `${`${text} First Name: ${child.firstName}\n Last Name: ${child.lastName}`}\n`
+      })
+      axios.post('/api/sendConfirmation', {
+        parentEmail: process.env.GMAIL,
+        subject: 'Error in absence submission',
+        text,
+      })
+    }
   }
 
   onRouteChange = () => {
@@ -67,19 +91,42 @@ class AbsenceConf extends Component {
     dispatch(clearAbsences())
   }
 
-  render() {
+  returnJSX = () => {
+    const { foundStudent } = this.state
+    console.log(`foundStudent: ${foundStudent}`)
+    if (foundStudent === -1) {
+      return (
+        <div className="container">
+          <h3>Processing</h3>
+        </div>
+      )
+    }
+
+    if (foundStudent === 1) {
+      return (
+        <div className="container">
+          <h3>Absence Confirmation</h3>
+          <p> Thanks for submitting an absence! You should recieve an email confirmation soon.</p>
+          <p> Not sure when you want to make up the class yet? Makeups can be scheduled at a later date. </p>
+          <br />
+          <br />
+          <button type='button' className='m-auto'>
+            <Link className='text-white' exact to='/makeup'>Schedule Makeup</Link>
+          </button>
+        </div>
+      )
+    }
+
     return (
       <div className="container">
-        <h3>Absence Confirmation</h3>
-        <p> Thanks for submitting an absence! You should recieve an email confirmation soon.</p>
-        <p> Not sure when you want to make up the class yet? Makeups can be scheduled at a later date. </p>
-        <br />
-        <br />
-        <button type='button' className='m-auto'>
-          <Link className='text-white' exact to='/makeup'>Schedule Makeup</Link>
-        </button>
+        <h3>ERROR</h3>
+        <p>The student information entered does not match or exist in our database (name and/or ID number must be exactly as entered in our database). Please check name spelling and schedule submitted. If both are correct, please call or email US Arts.</p>
       </div>
     )
+  }
+
+  render() {
+    return this.returnJSX()
   }
 }
 

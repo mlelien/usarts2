@@ -71,35 +71,35 @@ class MakeupConf extends Component {
      const { makeupLocation, makeupRoom, location: { makeup } } = this.props
 
      return (
-      <div className='container'>
-        <h3 className='mb-3'>Schedule a Makeup</h3>
-        <p className='my-4'> Thanks for scheduling a makeup! An email confirmation has been sent. Here is an overview of information submitted:</p>
-        <div className='row'>
-          <div className="col-md-2 mb-3">Absence Date</div>
-          <div className="col-md-2 mb-3"><b>{makeup.absenceDate}</b></div>
-        </div>
-        <div className='row'>
-          <div className="col-md-2 mb-3">Makeup Date</div>
-          <div className="col-md-2 mb-3"><b>{makeup.makeupDate}</b></div>
-          <div className="col-md-2 mb-3">Makeup Time</div>
-          <div className="col-md-2 mb-3"><b>{makeup.makeupTime}</b></div>
-        </div>
-        <div className='row'>
-          <div className="col-md-2 mb-3">Last Name</div>
-          <div className="col-md-2 mb-3"><b>{makeup.lastName}</b></div>
-          <div className="col-md-2 mb-3">Location</div>
-          <div className="col-md-2 mb-3"><b>{makeupLocation}</b></div>
-        </div>
-        <div className='row'>
-          <div className="col-md-2 mb-3">First Name</div>
-          <div className="col-md-2 mb-3"><b>{makeup.firstName}</b></div>
-          <div className="col-md-2 mb-3">Room #</div>
-          <div className="col-md-2 mb-3"><b>{makeupRoom}</b></div>
-        </div>
-        <Link to='/makeup'>
-          <button type='button' className='my-5'>Schedule New Makeup</button>
-        </Link>
-      </div>
+       <div className='container'>
+         <h3 className='mb-3'>Schedule a Makeup</h3>
+         <p className='my-4'> Thanks for scheduling a makeup! An email confirmation has been sent. Here is an overview of information submitted:</p>
+         <div className='row'>
+           <div className="col-md-2 mb-3">Absence Date</div>
+           <div className="col-md-2 mb-3"><b>{makeup.absenceDate}</b></div>
+         </div>
+         <div className='row'>
+           <div className="col-md-2 mb-3">Makeup Date</div>
+           <div className="col-md-2 mb-3"><b>{makeup.makeupDate}</b></div>
+           <div className="col-md-2 mb-3">Makeup Time</div>
+           <div className="col-md-2 mb-3"><b>{makeup.makeupTime}</b></div>
+         </div>
+         <div className='row'>
+           <div className="col-md-2 mb-3">Last Name</div>
+           <div className="col-md-2 mb-3"><b>{makeup.lastName}</b></div>
+           <div className="col-md-2 mb-3">Location</div>
+           <div className="col-md-2 mb-3"><b>{makeupLocation}</b></div>
+         </div>
+         <div className='row'>
+           <div className="col-md-2 mb-3">First Name</div>
+           <div className="col-md-2 mb-3"><b>{makeup.firstName}</b></div>
+           <div className="col-md-2 mb-3">Room #</div>
+           <div className="col-md-2 mb-3"><b>{makeupRoom}</b></div>
+         </div>
+         <Link to='/makeup'>
+           <button type='button' className='my-5'>Schedule New Makeup</button>
+         </Link>
+       </div>
      )
    }
 }
