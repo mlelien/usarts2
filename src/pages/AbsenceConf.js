@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Link, withRouter } from 'react-router-dom'
+import { Link, withRouter, setRouteLeaveHook } from 'react-router-dom'
 import axios from 'axios'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
@@ -21,10 +21,8 @@ class AbsenceConf extends Component {
   componentDidMount() {
     console.log('componentdidmount')
     const {
-      children, dispatch, fairfaxStudents, chantillyStudents, history,
+      children, dispatch, fairfaxStudents, chantillyStudents, history, router,
     } = this.props
-
-    history.listen(this.onRouteChange)
 
     const childrenDateFormatted = children.map((child) => {
       dispatch(addAbsence({
@@ -52,10 +50,10 @@ class AbsenceConf extends Component {
       if (Object.entries(studentObj).length === 0 && studentObj.constructor === Object) return false
 
       return studentObj.ID.slice(0, 1) === 'G'
-    && studentObj['Last Name'].toUpperCase() === firstChild.lastName.toUpperCase()
-    && studentObj['First Name'].toUpperCase() === firstChild.firstName.toUpperCase()
-    && turnToNormalTime(studentObj) === firstChild.classTime
-    && studentObj.Rm === firstChild.room
+        && studentObj['Last Name'].toUpperCase() === firstChild.lastName.toUpperCase()
+        && studentObj['First Name'].toUpperCase() === firstChild.firstName.toUpperCase()
+        && turnToNormalTime(studentObj) === firstChild.classTime
+        && studentObj.Rm === firstChild.room
     })[0]
 
     axios
@@ -63,7 +61,7 @@ class AbsenceConf extends Component {
         passedInData: childrenDateFormatted,
         spreadsheetId: process.env.ABSENCES_SHEET,
       })
-    console.log(student)
+
     if (student) {
       this.setState({ foundStudent: 1 })
 
@@ -86,7 +84,7 @@ class AbsenceConf extends Component {
     }
   }
 
-  onRouteChange = () => {
+  componentWillUnmount() {
     const { dispatch } = this.props
     dispatch(clearAbsences())
   }

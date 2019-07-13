@@ -25,6 +25,7 @@ const absenceChildrenReducer = (state = absenceDefaultState, action) => {
       return newState
 
     case 'CLEAR_ABSENCES':
+      console.log('CLEAR_ABSENCES')
       return absenceDefaultState
 
     case 'SET_DATE':
