@@ -1,5 +1,5 @@
 /* eslint-disable no-tabs */
-import React from 'react'
+import React, { useState } from 'react'
 import { withRouter } from 'react-router-dom'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
@@ -11,13 +11,28 @@ import RoomSelect from './RoomSelect'
 import ClassTimeSelect from './ClassTimeSelect'
 import SchoolPickupSelect from './SchoolPickupSelect'
 import { childPropType } from '../helpers/propTypes'
+import { getStudentFromList } from '../helpers/makeupHelpers'
 
 const AbsenceForm = (props) => {
-  const { childIndex, child } = props
+  const [studentID, setStudentIDState] = useState('')
+
   const {
-    lastName, firstName, studentID, room, classTime,
-    schoolPickup,
+    childIndex, child, fairfaxStudents, chantillyStudents, dispatch,
+  } = props
+  const {
+    lastName, firstName, room, classTime, schoolPickup,
   } = child
+
+  const onGetID = () => {
+    const studentList = child.location === 'Fairfax' ? fairfaxStudents : chantillyStudents
+    const student = getStudentFromList(studentList, room, classTime, firstName, lastName)
+
+    if (student) setStudentIDState(student.ID)
+    else setStudentIDState('Cannot find student')
+
+    dispatch(setStudentID(student.ID, childIndex))
+  }
+
 
   return (
     <form>
@@ -51,16 +66,6 @@ const AbsenceForm = (props) => {
             value={lastName}
           />
         </div>
-        <div className='form-group col-md-3'>
-          <label htmlFor="studentID">Student ID (optional)</label>
-          <TextInput
-            id='studentID'
-            label='Student ID (optional)'
-            action={setStudentID}
-            childIndex={childIndex}
-            value={studentID}
-          />
-        </div>
       </div>
       <div className='form-row'>
         <div className='form-group col-md-3'>
@@ -70,6 +75,22 @@ const AbsenceForm = (props) => {
         <div className='form-group col-md-3'>
           <label htmlFor="classTime">Class Time</label>
           <ClassTimeSelect childIndex={childIndex} value={classTime} />
+        </div>
+      </div>
+      <div className="form-row my-4">
+        <div className='form-group col-md-3'>
+          <label htmlFor="studentID">Student ID</label>
+          <input
+            type="text"
+            className='form-control'
+            id='studentID'
+            value={studentID}
+            disabled
+          />
+        </div>
+        <div className="form-group col-md-3">
+          <p className='small get-id-text'>Fill out all previous fields to get ID</p>
+          <button type='button' className="btn-primary" onClick={onGetID}>Get ID</button>
         </div>
       </div>
       <div className="form-row">
@@ -90,6 +111,8 @@ AbsenceForm.propTypes = {
 
 const mapStateToProps = (state, props) => ({
   child: state.absenceChildren[props.childIndex],
+  fairfaxStudents: state.fairfaxStudents,
+  chantillyStudents: state.chantillyStudents,
 })
 
 export default withRouter(connect(mapStateToProps)(AbsenceForm))

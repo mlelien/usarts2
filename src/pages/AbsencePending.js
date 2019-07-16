@@ -29,7 +29,7 @@ class AbsencePending extends Component {
 
   render() {
     return (
-      <div className="container">
+      <div className="container mb-4">
         <h3 className='text-muted mb-4'>Mark an Absence</h3>
         <p> Please review the following absence information: </p>
         {this.showAbsencePendingPerChild()}

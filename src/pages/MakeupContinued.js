@@ -1,5 +1,5 @@
 /* eslint-disable react/jsx-one-expression-per-line */
-import React from 'react'
+import React, { useState } from 'react'
 import { withRouter } from 'react-router-dom'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
@@ -10,11 +10,26 @@ import ClassDaySelect from '../components/makeup/ClassDaySelect'
 import ClassTimeSelect from '../components/ClassTimeSelect'
 import RoomSelect from '../components/RoomSelect'
 import ShowAbsences from '../components/makeup/ShowAbsences'
+import { getStudentFromList } from '../helpers/makeupHelpers'
 
 
 const MakeupContinued = (props) => {
-  const { makeupLocation, location: { date, time } } = props
-console.log('makeupLocaiton in MakeupContinued: ' + makeupLocation);
+  const [studentID, setStudentID] = useState('')
+
+  const {
+    dispatch, makeupLocation, lookupAbsenceLocation, lookupAbsenceRoom, lookupAbsenceTime, firstName, lastName, fairfaxStudents, chantillyStudents, location: { date, time },
+  } = props
+
+  const onGetID = () => {
+    const studentList = lookupAbsenceLocation === 'Fairfax' ? fairfaxStudents : chantillyStudents
+    const student = getStudentFromList(studentList, lookupAbsenceRoom, lookupAbsenceTime, firstName, lastName)
+
+    if (student) setStudentID(student.ID)
+    else setStudentID('Cannot find student')
+
+    dispatch(setStudentIDMakeup(student.ID))
+  }
+
   return (
     <div className='container'>
       <h3 className='mb-3'>Schedule a Makeup</h3>
@@ -57,16 +72,8 @@ console.log('makeupLocaiton in MakeupContinued: ' + makeupLocation);
             <label htmlFor="lastName">Last Name</label>
             <TextInput
               label='Last Name'
-              value=''
+              value={studentID}
               action={setLastNameMakeup}
-            />
-          </div>
-          <div className='col-md-3'>
-            <label htmlFor="studentID">Student ID</label>
-            <TextInput
-              label='Student ID (optional)'
-              value=''
-              action={setStudentIDMakeup}
             />
           </div>
         </div>
@@ -91,6 +98,22 @@ console.log('makeupLocaiton in MakeupContinued: ' + makeupLocation);
             </div>
           </div>
         </div>
+        <div className="row my-4">
+          <div className='col-md-3'>
+            <label htmlFor="studentID">Student ID</label>
+            <input
+              type="text"
+              className='form-control'
+              id='studentID'
+              value={studentID}
+              disabled
+            />
+          </div>
+          <div className="col-md-3">
+            <p className='small get-id-text'>Fill out all previous fields to get ID</p>
+            <button type='button' className="btn-primary" onClick={onGetID}>Get ID</button>
+          </div>
+        </div>
         <div>
           <ShowAbsences makeupDate={date} makeupTime={time} makeupLocation={makeupLocation} />
         </div>
@@ -109,6 +132,13 @@ MakeupContinued.propTypes = {
 
 const mapStateToProps = state => ({
   makeupLocation: state.makeup.location,
+  fairfaxStudents: state.fairfaxStudents,
+  chantillyStudents: state.chantillyStudents,
+  lookupAbsenceLocation: state.makeup.lookupAbsenceLocation,
+  lookupAbsenceRoom: state.makeup.lookupAbsenceRoom,
+  lookupAbsenceTime: state.makeup.lookupAbsenceTime,
+  firstName: state.makeup.firstName,
+  lastName: state.makeup.lastName,
 })
 
 export default withRouter(connect(mapStateToProps)(MakeupContinued))

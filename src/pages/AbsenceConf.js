@@ -8,6 +8,7 @@ import { clearAbsences } from '../redux/actions/AbsenceActions'
 import { absenceChildrenPropTypes } from '../helpers/propTypes'
 import { addAbsence } from '../redux/actions/DataActions'
 import { turnToNormalTime } from '../helpers/timeHelpers'
+import { getStudentFromList } from '../helpers/makeupHelpers'
 
 class AbsenceConf extends Component {
   constructor(props) {
@@ -19,7 +20,6 @@ class AbsenceConf extends Component {
   }
 
   componentDidMount() {
-    console.log('componentdidmount')
     const {
       children, dispatch, fairfaxStudents, chantillyStudents, history, router,
     } = this.props
@@ -43,18 +43,13 @@ class AbsenceConf extends Component {
       }
     })
 
-    const firstChild = children[0]
-    const studentList = firstChild.location === 'Fairfax' ? fairfaxStudents : chantillyStudents
-
-    const student = studentList.filter((studentObj) => {
-      if (Object.entries(studentObj).length === 0 && studentObj.constructor === Object) return false
-
-      return studentObj.ID.slice(0, 1) === 'G'
-        && studentObj['Last Name'].toUpperCase() === firstChild.lastName.toUpperCase()
-        && studentObj['First Name'].toUpperCase() === firstChild.firstName.toUpperCase()
-        && turnToNormalTime(studentObj) === firstChild.classTime
-        && studentObj.Rm === firstChild.room
-    })[0]
+    const students = children.map((child) => {
+      const studentList = child.location === 'Fairfax' ? fairfaxStudents : chantillyStudents
+      const {
+        room, classTime, firstName, lastName,
+      } = child
+      return getStudentFromList(studentList, room, classTime, firstName, lastName)
+    })
 
     axios
       .post('/api/postToSheets', {
@@ -62,13 +57,15 @@ class AbsenceConf extends Component {
         spreadsheetId: process.env.ABSENCES_SHEET,
       })
 
-    if (student) {
+    if (students) {
       this.setState({ foundStudent: 1 })
 
-      axios.post('/api/sendConfirmation', {
-        parentEmail: student.Email,
-        subject: 'Absence Confirmation',
-        text: 'Thanks for scheduling an absence!',
+      students.forEach((student) => {
+        axios.post('/api/sendConfirmation', {
+          parentEmail: student.Email,
+          subject: 'Absence Confirmation',
+          text: 'Thanks for scheduling an absence!',
+        })
       })
     } else {
       this.setState({ foundStudent: 0 })
@@ -91,7 +88,7 @@ class AbsenceConf extends Component {
 
   returnJSX = () => {
     const { foundStudent } = this.state
-    console.log(`foundStudent: ${foundStudent}`)
+
     if (foundStudent === -1) {
       return (
         <div className="container">

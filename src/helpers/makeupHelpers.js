@@ -42,10 +42,24 @@ export const getClassSchedule = (scheduleData) => {
     daysOfWeek[dayNum].push({
       roomNumber: schedObj['Room No'],
       time,
-      studentCount: schedObj['Students'],
+      studentCount: schedObj.Students,
     })
   })
   return daysOfWeek
 }
 
 export const getUniqueElem = arr => Array.from(new Set(arr))
+
+export const getStudentFromList = (studentList, absenceRoom, absenceTime, firstName, lastName) => {
+  const student = studentList.filter((studentObj) => {
+    if (Object.entries(studentObj).length === 0 && studentObj.constructor === Object) return false
+
+    return studentObj.ID.slice(0, 1) === 'G'
+      && studentObj['Last Name'].toUpperCase() === lastName.toUpperCase()
+      && studentObj['First Name'].toUpperCase() === firstName.toUpperCase()
+      && turnToNormalTime(studentObj) === absenceTime
+      && studentObj.Rm === absenceRoom
+  })[0]
+
+  return student
+}

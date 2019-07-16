@@ -5,6 +5,7 @@ import axios from 'axios'
 import { turnToNormalTime } from '../../helpers/timeHelpers'
 import { addMakeup } from '../../redux/actions/DataActions'
 import { clearMakeup } from '../../redux/actions/MakeupActions'
+import { getStudentFromList } from '../../helpers/makeupHelpers'
 
 
 class MakeupConf extends Component {
@@ -19,15 +20,7 @@ class MakeupConf extends Component {
       } = makeup
       const studentList = absenceLocation === 'Fairfax' ? fairfaxStudents : chantillyStudents
 
-      const student = studentList.filter((studentObj, i) => {
-        if (Object.entries(studentObj).length === 0 && studentObj.constructor === Object) return false
-
-        return studentObj.ID.slice(0, 1) === 'G'
-      && studentObj['Last Name'].toUpperCase() === lastName.toUpperCase()
-      && studentObj['First Name'].toUpperCase() === firstName.toUpperCase()
-      && turnToNormalTime(studentObj) === absenceTime
-      && studentObj.Rm === absenceRoom
-      })[0]
+      const student = getStudentFromList(studentList, absenceRoom, absenceTime, firstName, lastName)
 
       axios
         .post('/api/sendConfirmation', {

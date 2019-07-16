@@ -98,17 +98,33 @@ class LocationRadio extends Component {
   }
 
   render() {
+    const { childIndex } = this.props
+
     return (
       <div>
         <div className='form-check'>
-          <input type="radio" className="form-check-input" name='locationRadio' id='Fairfax' value='Fairfax' onChange={this.onChange} />
-          <label htmlFor="Fairfax" className='form-check-label'>
+          <input
+            type="radio"
+            className="form-check-input"
+            name='locationRadio'
+            id={childIndex ? `Fairfax-${childIndex}` : 'Fairfax'}
+            value='Fairfax'
+            onChange={this.onChange}
+          />
+          <label htmlFor={childIndex ? `Fairfax-${childIndex}` : 'Fairfax'} className='form-check-label'>
             Fairfax
           </label>
         </div>
         <div className="form-check">
-          <input type="radio" className="form-check-input" name='locationRadio' id='Chantilly' value='Chantilly' onChange={this.onChange} />
-          <label htmlFor="Chantilly" className='form-check-label'>
+          <input
+            type="radio"
+            className="form-check-input"
+            name='locationRadio'
+            id={childIndex ? `Chantilly-${childIndex}` : 'Chantilly'}
+            value='Chantilly'
+            onChange={this.onChange}
+          />
+          <label htmlFor={childIndex ? `Chantilly-${childIndex}` : 'Chantilly'} className='form-check-label'>
             Chantilly
           </label>
         </div>
