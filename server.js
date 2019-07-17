@@ -44,7 +44,7 @@ jwtClient.authorize((err) => {
 
 const transporter = nodemailer.createTransport({
   service: 'smtp.gmail.com',
-  secure: true,
+  secure: false,
   port: 465,
   tls: {
     rejectUnauthorized: false,
