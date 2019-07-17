@@ -43,8 +43,8 @@ jwtClient.authorize((err) => {
 })
 
 const transporter = nodemailer.createTransport({
-  service: 'gmail',
-  secure: false,
+  service: 'smtp.gmail.com',
+  secure: true,
   port: 465,
   tls: {
     rejectUnauthorized: false,
@@ -185,7 +185,7 @@ app.post('/api/sendConfirmation', (req, res) => {
     if (error) {
       console.log(error)
     } else {
-      console.log(`Email sent: ${  info.response}`)
+      console.log(`Email sent: ${info.response}`)
     }
   })
 })
