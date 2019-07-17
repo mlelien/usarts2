@@ -43,15 +43,15 @@ jwtClient.authorize((err) => {
 })
 
 const transporter = nodemailer.createTransport({
-  service: 'smtp.gmail.com',
+  service: 'gmail',
   secure: false,
   port: 465,
   tls: {
     rejectUnauthorized: false,
   },
   auth: {
-    user: 'USArtsChantilly@gmail.com',
-    pass: 'USArts6666',
+    user: process.env.GMAIL,
+    pass: process.env.GMAIL_PASSWORD,
   },
 })
 
