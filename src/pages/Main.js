@@ -7,7 +7,7 @@ import axios from 'axios'
 const Main = () => {
   const sendEmail = () => {
     axios.post('/api/sendConfirmation', {
-      parentEmail: 'emily.c.lien@gmail.com',
+      parentEmail: 'sameer.lakhani@live.com',
       subject: 'Absence Confirmation',
       text: 'Thanks for scheduling an absence!',
     })
