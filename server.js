@@ -42,19 +42,6 @@ jwtClient.authorize((err) => {
   }
 })
 
-// const transporter = nodemailer.createTransport({
-//   service: 'gmail',
-//   secure: false,
-//   port: 465,
-//   tls: {
-//     rejectUnauthorized: false,
-//   },
-//   auth: {
-//     user: process.env.GMAIL,
-//     pass: process.env.GMAIL_PASSWORD,
-//   },
-// })
-
 const transporter = nodemailer.createTransport({
   service: 'smtp.zoho.com',
   secure: true,
@@ -63,8 +50,8 @@ const transporter = nodemailer.createTransport({
     rejectUnauthorized: false,
   },
   auth: {
-    user: process.env.GMAIL,
-    pass: process.env.GMAIL_PASSWORD,
+    user: 'makeup@usartscenter.com',
+    pass: 'USArts6666',
   },
 })
 
@@ -188,8 +175,8 @@ app.post('/api/sendConfirmation', (req, res) => {
   // })
 
   const mailOptions = {
-    from: process.env.GMAIL,
-    to: parentEmail,
+    from: 'makeup@usartscenter.com',
+    to: 'makeup@usartscenter.com',
     subject,
     text,
   }
