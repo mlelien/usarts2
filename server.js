@@ -5,10 +5,7 @@ const { google } = require('googleapis')
 const bodyParser = require('body-parser')
 const logger = require('morgan')
 const nodemailer = require('nodemailer')
-const sgMail = require('@sendgrid/mail')
-const Mailgun = require('mailgun-js')
 
-sgMail.setApiKey(process.env.SENDGRID_API_KEY)
 // const privatekey = require('./sheets.json')
 require('dotenv').config()
 
@@ -42,18 +39,34 @@ jwtClient.authorize((err) => {
   }
 })
 
+// var nodemailer = require('nodemailer');
+
+// const transporter = nodemailer.createTransport({
+//   service: 'smtp.zoho.com',
+//   secure: true,
+//   port: 465,
+//   tls: {
+//     rejectUnauthorized: false,
+//   },
+//   auth: {
+//     user: 'makeup@usartscenter.com',
+//     pass: 'USArts6666',
+//   },
+// })
+
+// Create the transporter with the required configuration for Gmail
+// change the user and pass !
 const transporter = nodemailer.createTransport({
-  service: 'smtp.zoho.com',
-  secure: true,
+  host: 'smtp.zoho.com',
   port: 465,
-  tls: {
-    rejectUnauthorized: false,
-  },
+  secure: true, // use SSL
   auth: {
     user: 'makeup@usartscenter.com',
     pass: 'USArts6666',
   },
 })
+
+// setup e-mail data, even with unicode symbols
 
 app.get('/api/allLastModified', (req, res) => {
   const drive = google.drive('v3')
@@ -149,45 +162,30 @@ app.post('/api/postToSheets', (req, res) => {
 app.post('/api/sendConfirmation', (req, res) => {
   const { parentEmail, subject, text } = req.body
 
-  // const mailgun = new Mailgun({
-  //   apiKey: process.env.MAILGUN_API_KEY,
-  //   domain: process.env.MAILGUN_DOMAIN,
-  // })
-
-  // const msg = {
-  //   to: parentEmail,
-  //   from: process.env.GMAIL,
-  //   subject,
-  //   text,
-  // }
-
-  // mailgun.messages().send(msg, (err, body) => {
-  //   // If there is an error, render the error page
-  //   if (err) {
-  //     console.log('got an error: ', err)
-  //   }
-  //   // Else we can greet    and leave
-  //   else {
-  //     // Here "submitted.jade" is the view file for this landing page
-  //     // We pass the variable "email" from the url parameter in an object rendered by Jade
-  //     console.log('sent email')
-  //   }
-  // })
-
   const mailOptions = {
-    from: 'makeup@usartscenter.com',
-    to: 'makeup@usartscenter.com',
-    subject,
-    text,
+    from: '"test " <makeup@usartscenter.com>', // sender address (who sends)
+    to: 'makeup@usartscenter.com, shinebloomagency@gmail.com', // list of receivers (who receives)
+    subject: 'Hello ', // Subject line
+    text: 'Hello world ', // plaintext body
+    html: '<b>Hello world </b><br> This is the first email sent with Nodemailer', // html body
   }
-
+  console.log('send cnfiration')
+  // send mail with defined transport object
   transporter.sendMail(mailOptions, (error, info) => {
     if (error) {
-      console.log(error)
-    } else {
-      console.log(`Email sent: ${info.response}`)
+      return console.log(error)
     }
+
+    console.log(`Message sent: ${info.response}`)
   })
+
+  // transporter.sendMail(mailOptions, (error, info) => {
+  //   if (error) {
+  //     console.log(error)
+  //   } else {
+  //     console.log(`Email sent: ${info.response}`)
+  //   }
+  // })
 })
 
 app.use(express.static(publicPath))
