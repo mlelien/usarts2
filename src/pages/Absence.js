@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-one-expression-per-line */
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { withRouter } from 'react-router-dom'
@@ -81,7 +82,7 @@ class Absence extends Component {
         <div className='row'>
           <div className='form-group col mb-5'>
             <label htmlFor="repeatedAbsences" className='mb-0'>Repeated Absences (optional)</label>
-            <small className="form-text text-muted mb-1">If this will be a repeated absence, please let us know the number of classes following <u>not</u> inclduing the date selected above.</small>
+            <small className="form-text text-muted mb-1">If this will be a repeated absence, please let us know the number of classes following <u>not</u> including the date selected above.</small>
             <input
               id='repeatedAbsences'
               className='form-control col-md-1'

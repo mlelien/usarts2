@@ -17,6 +17,7 @@ import 'react-dates/initialize'
 import 'react-dates/lib/css/_datepicker.css'
 import '../styles/css/Calendar.css'
 import { setMakeupDate, setRoomMakeup } from '../redux/actions/MakeupActions'
+import { sortTimes } from '../helpers/timeHelpers'
 
 class Makeup extends Component {
   constructor(props) {
@@ -28,7 +29,9 @@ class Makeup extends Component {
   }
 
   getAvailabilityCount = (roomObj, selectedDate) => {
-    const { fairfax, chantilly, location, absences, makeupSheets } = this.props
+    const {
+      fairfax, chantilly, location, absences, makeupSheets,
+    } = this.props
     const { roomNumber, studentCount } = roomObj
     const [month, day] = selectedDate.format('l').split('/')
 
@@ -41,10 +44,8 @@ class Makeup extends Component {
     }
 
     let makeupCount = 0
-    console.log('makeupSheets');
-    console.log(makeupSheets);
+
     makeupSheets.forEach((makeup) => {
-      console.log(makeup);
       const makeupDate = makeup['Makeup Date']
       const [makeupMonth, makeupDay] = makeupDate.split('/')
 
@@ -93,7 +94,7 @@ class Makeup extends Component {
       }
     })
 
-    times = getUniqueElem(times)
+    times = sortTimes(getUniqueElem(times))
     const roomsJSX = getUniqueElem(showRooms).map(room => <th key={room} scope='col'>{room}</th>)
     const tableDataJSX = this.showTimesAndButtons(times, availabilityBtns)
 
@@ -166,12 +167,12 @@ class Makeup extends Component {
       jsx.push(
         <td key={i}>
           <Link to={location} onClick={() => this.onBtnClick(btn.roomNumber)}>
-            {btn.text === 'Full' ?  (
+            {btn.text === 'Full' ? (
               <button className='btn-info disabled' disabled type='button'>{btn.text}</button>
             ) : (
               <button className='btn-info' type='button'>{btn.text}</button>
             )}
-           
+
           </Link>
         </td>,
       )

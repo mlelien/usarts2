@@ -39,30 +39,13 @@ jwtClient.authorize((err) => {
   }
 })
 
-// var nodemailer = require('nodemailer');
-
-// const transporter = nodemailer.createTransport({
-//   service: 'smtp.zoho.com',
-//   secure: true,
-//   port: 465,
-//   tls: {
-//     rejectUnauthorized: false,
-//   },
-//   auth: {
-//     user: 'makeup@usartscenter.com',
-//     pass: 'USArts6666',
-//   },
-// })
-
-// Create the transporter with the required configuration for Gmail
-// change the user and pass !
 const transporter = nodemailer.createTransport({
   host: 'smtp.zoho.com',
   port: 465,
   secure: true, // use SSL
   auth: {
     user: 'makeup@usartscenter.com',
-    pass: 'USArts6666',
+    pass: process.env.GMAIL_PASSWORD,
   },
 })
 
@@ -163,13 +146,12 @@ app.post('/api/sendConfirmation', (req, res) => {
   const { parentEmail, subject, text } = req.body
 
   const mailOptions = {
-    from: '"test " <makeup@usartscenter.com>', // sender address (who sends)
-    to: 'makeup@usartscenter.com, shinebloomagency@gmail.com', // list of receivers (who receives)
-    subject: 'Hello ', // Subject line
-    text: 'Hello world ', // plaintext body
-    html: '<b>Hello world </b><br> This is the first email sent with Nodemailer', // html body
+    from: 'makeup@usartscenter.com',
+    to: parentEmail,
+    subject,
+    text: `${text} This is an auto-generated email please do not reply`,
   }
-  console.log('send cnfiration')
+
   // send mail with defined transport object
   transporter.sendMail(mailOptions, (error, info) => {
     if (error) {
@@ -178,14 +160,6 @@ app.post('/api/sendConfirmation', (req, res) => {
 
     console.log(`Message sent: ${info.response}`)
   })
-
-  // transporter.sendMail(mailOptions, (error, info) => {
-  //   if (error) {
-  //     console.log(error)
-  //   } else {
-  //     console.log(`Email sent: ${info.response}`)
-  //   }
-  // })
 })
 
 app.use(express.static(publicPath))
