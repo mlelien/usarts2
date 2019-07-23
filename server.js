@@ -42,9 +42,22 @@ jwtClient.authorize((err) => {
   }
 })
 
+// const transporter = nodemailer.createTransport({
+//   service: 'gmail',
+//   secure: false,
+//   port: 465,
+//   tls: {
+//     rejectUnauthorized: false,
+//   },
+//   auth: {
+//     user: process.env.GMAIL,
+//     pass: process.env.GMAIL_PASSWORD,
+//   },
+// })
+
 const transporter = nodemailer.createTransport({
-  service: 'gmail',
-  secure: false,
+  service: 'smtp.zoho.com',
+  secure: true,
   port: 465,
   tls: {
     rejectUnauthorized: false,
